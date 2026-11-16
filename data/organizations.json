@@ -1,0 +1,3092 @@
+[
+  {
+    "section": "Europe",
+    "country": "Germany",
+    "organization": "Technical University of Munich",
+    "type": "University",
+    "source_key": "TUM",
+    "id": "1",
+    "sourceUrl": "https://www.math.cit.tum.de/en/math/research/groups/numerical-methods-plasma-physics/",
+    "sourceNote": "Fusion research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Spain",
+    "organization": "Universidad Carlos III de Madrid",
+    "type": "University",
+    "source_key": "UC3M",
+    "id": "2",
+    "sourceUrl": "https://uc3m.es/phdprogram/plasma-physics-nuclear-fusion",
+    "sourceNote": "Fusion research and doctoral programme"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "Politecnico di Milano",
+    "type": "University",
+    "source_key": "AFFIL",
+    "id": "3",
+    "sourceUrl": "https://scipub.euro-fusion.org/wp-content/uploads/eurofusion/wppfc_affiliations.html",
+    "sourceNote": "Research collaboration affiliation; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Texas at Austin — Institute for Fusion Studies",
+    "type": "University",
+    "source_key": "UTEX",
+    "id": "4",
+    "sourceUrl": "https://physics.utexas.edu/research/centers-institutes/institute-fusion-studies",
+    "sourceNote": "Fusion research programme description"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Cornell University — Laboratory of Plasma Studies",
+    "type": "University",
+    "source_key": "CORNELL",
+    "id": "5",
+    "sourceUrl": "https://news.cornell.edu/stories/2023/12/lab-plasma-studies-joins-doe-funded-hub-advance-fusion-energy",
+    "sourceNote": "Named fusion research collaboration, 2023"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "California Institute of Technology",
+    "type": "University",
+    "source_key": "CALTECH",
+    "id": "6",
+    "sourceUrl": "https://www.aphms.caltech.edu/people/pbellan",
+    "sourceNote": "Research description with explicit fusion applications"
+  },
+  {
+    "section": "Companies",
+    "country": "United States",
+    "organization": "Marathon Fusion",
+    "type": "Fusion technology / research company",
+    "source_key": "MARATHON",
+    "id": "7",
+    "sourceUrl": "https://www.marathonfusion.com/",
+    "sourceNote": "Company fusion technology R&D description"
+  },
+  {
+    "section": "Companies",
+    "country": "United Kingdom",
+    "organization": "Oxford Sigma",
+    "type": "Fusion technology / research company",
+    "source_key": "SIGMA",
+    "id": "8",
+    "sourceUrl": "https://oxfordsigma.com/",
+    "sourceNote": "Company fusion materials R&D description"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Oxford",
+    "type": "University",
+    "source_key": "UK",
+    "id": "9",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of York",
+    "type": "University",
+    "source_key": "UK",
+    "id": "10",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "Imperial College London",
+    "type": "University",
+    "source_key": "UK",
+    "id": "11",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Cambridge",
+    "type": "University",
+    "source_key": "UK",
+    "id": "12",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Manchester",
+    "type": "University",
+    "source_key": "UK",
+    "id": "13",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Birmingham",
+    "type": "University",
+    "source_key": "UK",
+    "id": "14",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Bristol",
+    "type": "University",
+    "source_key": "UK",
+    "id": "15",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Sheffield",
+    "type": "University",
+    "source_key": "UK",
+    "id": "16",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Liverpool",
+    "type": "University",
+    "source_key": "UK",
+    "id": "17",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "Durham University",
+    "type": "University",
+    "source_key": "UK",
+    "id": "18",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Strathclyde",
+    "type": "University",
+    "source_key": "UK",
+    "id": "19",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Warwick",
+    "type": "University",
+    "source_key": "UK",
+    "id": "20",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Edinburgh",
+    "type": "University",
+    "source_key": "UK",
+    "id": "21",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Nottingham",
+    "type": "University",
+    "source_key": "UK",
+    "id": "22",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "Lancaster University",
+    "type": "University",
+    "source_key": "UK",
+    "id": "23",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "Queen's University Belfast",
+    "type": "University",
+    "source_key": "UK",
+    "id": "24",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "Swansea University",
+    "type": "University",
+    "source_key": "UK",
+    "id": "25",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "University of Bath",
+    "type": "University",
+    "source_key": "UK",
+    "id": "26",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "UK Atomic Energy Authority (UKAEA)",
+    "type": "Public research institute",
+    "source_key": "UKD",
+    "id": "27",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-directory-html",
+    "sourceNote": "Government programme description, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "STFC Central Laser Facility",
+    "type": "Public research institute",
+    "source_key": "UK",
+    "id": "28",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-html",
+    "sourceNote": "Government sector mapping, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "United Kingdom",
+    "organization": "UK Fusion Energy Ltd (STEP)",
+    "type": "Public development company",
+    "source_key": "UKD",
+    "id": "29",
+    "sourceUrl": "https://www.gov.uk/government/publications/uk-fusion-investment-prospectus/uk-fusion-investment-prospectus-directory-html",
+    "sourceNote": "Government programme description, September 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "Germany",
+    "organization": "Max Planck Institute for Plasma Physics (IPP)",
+    "type": "Research institute",
+    "source_key": "DE",
+    "id": "30",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/germany/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Germany",
+    "organization": "Forschungszentrum Jülich",
+    "type": "Research institute",
+    "source_key": "DE",
+    "id": "31",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/germany/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Germany",
+    "organization": "Karlsruhe Institute of Technology (KIT)",
+    "type": "University / research institute",
+    "source_key": "DE",
+    "id": "32",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/germany/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Germany",
+    "organization": "University of Stuttgart",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "33",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "CEA — Institute for Magnetic Fusion Research (IRFM)",
+    "type": "Research institute",
+    "source_key": "CEA",
+    "id": "34",
+    "sourceUrl": "https://www.cea.fr/drf/Pages/La-DRF/Instituts/institut-irfm.aspx",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "CNRS — participating fusion federation laboratories",
+    "type": "Research organization",
+    "source_key": "FR",
+    "id": "35",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "Aix-Marseille University",
+    "type": "University",
+    "source_key": "FR",
+    "id": "36",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "École Polytechnique",
+    "type": "University",
+    "source_key": "FR",
+    "id": "37",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "Sorbonne University",
+    "type": "University",
+    "source_key": "FR",
+    "id": "38",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "Université Paris-Saclay",
+    "type": "University",
+    "source_key": "FR",
+    "id": "39",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "Université Grenoble Alpes",
+    "type": "University",
+    "source_key": "FR",
+    "id": "40",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "University of Bordeaux",
+    "type": "University",
+    "source_key": "FR",
+    "id": "41",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "France",
+    "organization": "Université de Lorraine",
+    "type": "University",
+    "source_key": "FR",
+    "id": "42",
+    "sourceUrl": "https://www.univ-lorraine.fr/raa/wp-content/uploads/sites/6/2024/10/annexe-01-convention_quinquennale_ul_cnrs_2024_2028.pdf",
+    "sourceNote": "Federation affiliation; specific group should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "ENEA",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "43",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "CNR — Institute for Plasma Science and Technology (ISTP)",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "44",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "Consorzio RFX",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "45",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "National Institute for Nuclear Physics (INFN)",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "46",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "DTT consortium",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "47",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "Consorzio CREATE",
+    "type": "Research institute / consortium",
+    "source_key": "IT",
+    "id": "48",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/italy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Padua",
+    "type": "University",
+    "source_key": "PAD",
+    "id": "49",
+    "sourceUrl": "https://www.unipd.it/en/dottoratoscheda/fusion-science-engineering",
+    "sourceNote": "Fusion research and doctoral collaboration"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Naples Federico II",
+    "type": "University",
+    "source_key": "PAD",
+    "id": "50",
+    "sourceUrl": "https://www.unipd.it/en/dottoratoscheda/fusion-science-engineering",
+    "sourceNote": "Fusion research and doctoral collaboration"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "Politecnico di Torino",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "51",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Milano-Bicocca",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "52",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Cagliari",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "53",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Tuscia",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "54",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Italy",
+    "organization": "University of Udine",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "55",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Netherlands",
+    "organization": "Dutch Institute for Fundamental Energy Research (DIFFER)",
+    "type": "Research institute",
+    "source_key": "NL",
+    "id": "56",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/the-netherlands/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Netherlands",
+    "organization": "Eindhoven University of Technology",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "57",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "Netherlands",
+    "organization": "University of Twente",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "58",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Europe",
+    "country": "Switzerland",
+    "organization": "EPFL — Swiss Plasma Center",
+    "type": "University",
+    "source_key": "CH",
+    "id": "59",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/switzerland/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Spain",
+    "organization": "CIEMAT — National Fusion Laboratory",
+    "type": "Research institute",
+    "source_key": "ES",
+    "id": "60",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/spain/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Spain",
+    "organization": "University of Seville — Plasma Science and Fusion Technology Laboratory",
+    "type": "University",
+    "source_key": "SMART",
+    "id": "61",
+    "sourceUrl": "https://www.us.es/bous-numeros/numero-14-6-de-mayo-2026/acuerdo-del-pleno-del-consejo-social-de-22-de-enero-de-2026",
+    "sourceNote": "University research/spin-off documentation, 2026"
+  },
+  {
+    "section": "Europe",
+    "country": "Belgium",
+    "organization": "Royal Military Academy — Laboratory for Plasma Physics",
+    "type": "University / military academy",
+    "source_key": "BE",
+    "id": "62",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/belgium/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Belgium",
+    "organization": "SCK CEN",
+    "type": "Research institute",
+    "source_key": "BE",
+    "id": "63",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/belgium/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Belgium",
+    "organization": "Ghent University",
+    "type": "University",
+    "source_key": "RFX",
+    "id": "64",
+    "sourceUrl": "https://www.igi.cnr.it/en/",
+    "sourceNote": "Fusion research collaboration roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Austria",
+    "organization": "TU Wien",
+    "type": "University",
+    "source_key": "AT",
+    "id": "65",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Austria",
+    "organization": "Graz University of Technology",
+    "type": "University",
+    "source_key": "AT",
+    "id": "66",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Austria",
+    "organization": "University of Innsbruck",
+    "type": "University",
+    "source_key": "AT",
+    "id": "67",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Austria",
+    "organization": "Erich Schmid Institute of Materials Science",
+    "type": "Research institute",
+    "source_key": "AT",
+    "id": "68",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Austria",
+    "organization": "Research Studios Austria",
+    "type": "Research institute",
+    "source_key": "AT",
+    "id": "69",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "Institute of Plasma Physics of the Czech Academy of Sciences",
+    "type": "Research institute",
+    "source_key": "CZ",
+    "id": "70",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "Research Centre Řež",
+    "type": "Research institute",
+    "source_key": "CZ",
+    "id": "71",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "Nuclear Physics Institute of the Czech Academy of Sciences",
+    "type": "Research institute",
+    "source_key": "CZ",
+    "id": "72",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "Czech Technical University in Prague",
+    "type": "University",
+    "source_key": "CZ",
+    "id": "73",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "Charles University",
+    "type": "University",
+    "source_key": "CZ",
+    "id": "74",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Czech Republic",
+    "organization": "University of West Bohemia",
+    "type": "University",
+    "source_key": "CZ",
+    "id": "75",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/czech-republic/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Europe",
+    "country": "Denmark",
+    "organization": "Technical University of Denmark",
+    "type": "University",
+    "source_key": "DK",
+    "id": "76",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/denmark/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Denmark",
+    "organization": "Aarhus University",
+    "type": "University",
+    "source_key": "DK",
+    "id": "77",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/denmark/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Denmark",
+    "organization": "University of Southern Denmark",
+    "type": "University",
+    "source_key": "DK",
+    "id": "78",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/denmark/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Denmark",
+    "organization": "Aalborg University",
+    "type": "University",
+    "source_key": "DK",
+    "id": "79",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/denmark/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "VTT Technical Research Centre of Finland",
+    "type": "Research institute",
+    "source_key": "FI",
+    "id": "80",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "Aalto University",
+    "type": "University",
+    "source_key": "FI",
+    "id": "81",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "LUT University",
+    "type": "University",
+    "source_key": "FI",
+    "id": "82",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "Tampere University",
+    "type": "University",
+    "source_key": "FI",
+    "id": "83",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "University of Helsinki",
+    "type": "University",
+    "source_key": "FI",
+    "id": "84",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Finland",
+    "organization": "Åbo Akademi University",
+    "type": "University",
+    "source_key": "FI",
+    "id": "85",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/finland/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Sweden",
+    "organization": "KTH Royal Institute of Technology",
+    "type": "University",
+    "source_key": "SE",
+    "id": "86",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/sweden/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Sweden",
+    "organization": "Chalmers University of Technology",
+    "type": "University",
+    "source_key": "SE",
+    "id": "87",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/sweden/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Sweden",
+    "organization": "Uppsala University",
+    "type": "University",
+    "source_key": "SE",
+    "id": "88",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/sweden/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Sweden",
+    "organization": "Lund University",
+    "type": "University",
+    "source_key": "SE",
+    "id": "89",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/sweden/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Sweden",
+    "organization": "RISE Research Institutes of Sweden",
+    "type": "Research institute",
+    "source_key": "SE",
+    "id": "90",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/sweden/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "National Centre for Scientific Research Demokritos",
+    "type": "Research institute",
+    "source_key": "GR",
+    "id": "91",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "National Technical University of Athens",
+    "type": "University",
+    "source_key": "GR",
+    "id": "92",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "National and Kapodistrian University of Athens",
+    "type": "University",
+    "source_key": "GR",
+    "id": "93",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "University of Thessaly",
+    "type": "University",
+    "source_key": "GR",
+    "id": "94",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "Aristotle University of Thessaloniki",
+    "type": "University",
+    "source_key": "GR",
+    "id": "95",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "University of Ioannina",
+    "type": "University",
+    "source_key": "GR",
+    "id": "96",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "Technical University of Crete",
+    "type": "University",
+    "source_key": "GR",
+    "id": "97",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Greece",
+    "organization": "Hellenic Mediterranean University",
+    "type": "University",
+    "source_key": "GR",
+    "id": "98",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/greece/",
+    "sourceNote": "National consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Hungary",
+    "organization": "HUN-REN Centre for Energy Research",
+    "type": "Research institute",
+    "source_key": "HU",
+    "id": "99",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/hungary/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Poland",
+    "organization": "Institute of Plasma Physics and Laser Microfusion (IPPLM / IFPiLM)",
+    "type": "Research institute",
+    "source_key": "PL",
+    "id": "100",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/poland/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Romania",
+    "organization": "National Institute for Lasers, Plasma and Radiation Physics (INFLPR)",
+    "type": "Research institute",
+    "source_key": "RO",
+    "id": "101",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/romania/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Romania",
+    "organization": "National Institute of Materials Physics (INFIM)",
+    "type": "Research institute",
+    "source_key": "RO",
+    "id": "102",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/romania/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Romania",
+    "organization": "National Institute for Cryogenic and Isotopic Technologies (ICIT)",
+    "type": "Research institute",
+    "source_key": "RO",
+    "id": "103",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/romania/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Romania",
+    "organization": "Horia Hulubei National Institute for R&D in Physics and Nuclear Engineering (IFIN-HH)",
+    "type": "Research institute",
+    "source_key": "RO",
+    "id": "104",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/romania/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Europe",
+    "country": "Ukraine",
+    "organization": "Kharkiv Institute of Physics and Technology — Institute of Plasma Physics",
+    "type": "Research institute",
+    "source_key": "UA",
+    "id": "105",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/ukraine/",
+    "sourceNote": "Programme description; facility availability not verified"
+  },
+  {
+    "section": "Europe",
+    "country": "Bulgaria",
+    "organization": "Institute for Nuclear Research and Nuclear Energy (INRNE)",
+    "type": "Research institute",
+    "source_key": "EU",
+    "id": "106",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Croatia",
+    "organization": "Ruđer Bošković Institute",
+    "type": "Research institute",
+    "source_key": "EU",
+    "id": "107",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Estonia",
+    "organization": "University of Tartu",
+    "type": "University",
+    "source_key": "EU",
+    "id": "108",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Ireland",
+    "organization": "Dublin City University",
+    "type": "University",
+    "source_key": "EU",
+    "id": "109",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Latvia",
+    "organization": "University of Latvia — Institute of Solid State Physics",
+    "type": "University institute",
+    "source_key": "EU",
+    "id": "110",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Lithuania",
+    "organization": "Lithuanian Energy Institute",
+    "type": "Research institute",
+    "source_key": "EU",
+    "id": "111",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Malta",
+    "organization": "University of Malta",
+    "type": "University",
+    "source_key": "EU",
+    "id": "112",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Norway",
+    "organization": "UiT The Arctic University of Norway",
+    "type": "University",
+    "source_key": "EU",
+    "id": "113",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Portugal",
+    "organization": "University of Lisbon — Instituto Superior Técnico / IPFN",
+    "type": "University institute",
+    "source_key": "EU",
+    "id": "114",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Slovakia",
+    "organization": "Comenius University",
+    "type": "University",
+    "source_key": "EU",
+    "id": "115",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "Europe",
+    "country": "Slovenia",
+    "organization": "Jožef Stefan Institute",
+    "type": "Research institute",
+    "source_key": "EU",
+    "id": "116",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/",
+    "sourceNote": "Consortium roster"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Massachusetts Institute of Technology — Plasma Science and Fusion Center",
+    "type": "University",
+    "source_key": "MIT",
+    "id": "117",
+    "sourceUrl": "https://www.psfc.mit.edu/research-areas/fusion-energy/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Columbia University",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "118",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Tennessee, Knoxville",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "119",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "North Carolina State University",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "120",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "William & Mary",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "121",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, Davis",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "122",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, Los Angeles",
+    "type": "University",
+    "source_key": "D3D",
+    "id": "123",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Princeton University",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "124",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Wisconsin–Madison",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "125",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, Berkeley",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "126",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, Irvine",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "127",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, San Diego",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "128",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of California, Santa Barbara",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "129",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Michigan",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "130",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Illinois Urbana-Champaign",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "131",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Washington",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "132",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Maryland",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "133",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Auburn University",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "134",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Georgia Institute of Technology",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "135",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Purdue University",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "136",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of New Mexico",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "137",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Colorado State University",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "138",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Texas A&M University",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "139",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Houston",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "140",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Virginia Tech",
+    "type": "University",
+    "source_key": "DOE",
+    "id": "141",
+    "sourceUrl": "https://science.osti.gov/-/media/fes/fesac/pdf/2024/Vision-for-the-Fusion-Energy-Sciences-Program.pdf",
+    "sourceNote": "DOE fusion ecosystem map, 2024"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "University of Rochester — Laboratory for Laser Energetics",
+    "type": "University",
+    "source_key": "ICF",
+    "id": "142",
+    "sourceUrl": "https://heds-center.llnl.gov/research/research-areas/inertial-confinement-fusion",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Princeton Plasma Physics Laboratory (PPPL)",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "143",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Oak Ridge National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "144",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Los Alamos National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "145",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Sandia National Laboratories",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "146",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Idaho National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "147",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "SLAC National Accelerator Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "148",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Savannah River National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "149",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Lawrence Berkeley National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "150",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Pacific Northwest National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "151",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Argonne National Laboratory",
+    "type": "National laboratory",
+    "source_key": "LAB",
+    "id": "152",
+    "sourceUrl": "https://science.osti.gov/Funding-Opportunities/-/media/funding/pdf/Awards-Lists/2024/3295-Awards-List-Spreadsheet-FY24.pdf",
+    "sourceNote": "Named fusion R&D projects, 2024 selection list"
+  },
+  {
+    "section": "North America",
+    "country": "United States",
+    "organization": "Lawrence Livermore National Laboratory — National Ignition Facility",
+    "type": "National laboratory",
+    "source_key": "ICF",
+    "id": "153",
+    "sourceUrl": "https://heds-center.llnl.gov/research/research-areas/inertial-confinement-fusion",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "Canadian Nuclear Laboratories",
+    "type": "Research institute",
+    "source_key": "CNL",
+    "id": "154",
+    "sourceUrl": "https://www.cnl.ca/chasing-the-sun-canadas-national-nuclear-laboratory-searches-for-materials-strong-enough-to-support-a-fusion-energy-future/",
+    "sourceNote": "Research report, June 2026"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "University of Saskatchewan",
+    "type": "University",
+    "source_key": "CA",
+    "id": "155",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "University of Alberta",
+    "type": "University",
+    "source_key": "CA",
+    "id": "156",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "University of Toronto — Institute for Aerospace Studies",
+    "type": "University",
+    "source_key": "CA",
+    "id": "157",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "McMaster University",
+    "type": "University",
+    "source_key": "CA",
+    "id": "158",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "Queen's University",
+    "type": "University",
+    "source_key": "CA",
+    "id": "159",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "Ontario Tech University (formerly UOIT)",
+    "type": "University",
+    "source_key": "CA",
+    "id": "160",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "North America",
+    "country": "Canada",
+    "organization": "Université du Québec à Montréal",
+    "type": "University",
+    "source_key": "CA",
+    "id": "161",
+    "sourceUrl": "https://www.cns-snc.ca/about-cns/divisions/fusion/fusion-energy-science-and-technology-cns-fest/listing-of-fusion-research-groups-in-canada/",
+    "sourceNote": "Sector directory; current group should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Institute of Plasma Physics, Chinese Academy of Sciences (ASIPP)",
+    "type": "Research institute",
+    "source_key": "CN",
+    "id": "162",
+    "sourceUrl": "https://www.nifs.ac.jp/report/annrep25/pdf/057.pdf",
+    "sourceNote": "Named research collaboration in FY2024"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Southwestern Institute of Physics (SWIP)",
+    "type": "Research institute",
+    "source_key": "CN",
+    "id": "163",
+    "sourceUrl": "https://www.nifs.ac.jp/report/annrep25/pdf/057.pdf",
+    "sourceNote": "Named research collaboration in FY2024"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Peking University",
+    "type": "University",
+    "source_key": "CN",
+    "id": "164",
+    "sourceUrl": "https://www.nifs.ac.jp/report/annrep25/pdf/057.pdf",
+    "sourceNote": "Named research collaboration in FY2024"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Southwest Jiaotong University",
+    "type": "University",
+    "source_key": "CN",
+    "id": "165",
+    "sourceUrl": "https://www.nifs.ac.jp/report/annrep25/pdf/057.pdf",
+    "sourceNote": "Named research collaboration in FY2024"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Huazhong University of Science and Technology",
+    "type": "University",
+    "source_key": "CN",
+    "id": "166",
+    "sourceUrl": "https://www.nifs.ac.jp/report/annrep25/pdf/057.pdf",
+    "sourceNote": "Named research collaboration in FY2024"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Tsinghua University",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "167",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Dalian University of Technology",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "168",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Lanzhou University",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "169",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "Anhui University of Science and Technology",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "170",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "China",
+    "organization": "University of Science and Technology of China — KTX",
+    "type": "University",
+    "source_key": "IAEA22",
+    "id": "171",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "National Institute for Fusion Science (NIFS)",
+    "type": "Research institute",
+    "source_key": "NIFSO",
+    "id": "172",
+    "sourceUrl": "https://www.nifs.ac.jp/en/about/overview.html",
+    "sourceNote": "Research and graduate collaboration description"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "National Institutes for Quantum Science and Technology (QST)",
+    "type": "Research institute",
+    "source_key": "NIFS",
+    "id": "173",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "Kyoto University",
+    "type": "University",
+    "source_key": "NIFS",
+    "id": "174",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "Kyushu University",
+    "type": "University",
+    "source_key": "NIFS",
+    "id": "175",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "The University of Osaka — Institute of Laser Engineering (formerly Osaka University)",
+    "type": "University",
+    "source_key": "NIFS",
+    "id": "176",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "University of Tsukuba",
+    "type": "University",
+    "source_key": "NIFS",
+    "id": "177",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "University of Toyama",
+    "type": "University",
+    "source_key": "NIFS",
+    "id": "178",
+    "sourceUrl": "https://www.nifs.ac.jp/en/collaboration/",
+    "sourceNote": "Named fusion research collaboration"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "University of Tokyo",
+    "type": "University",
+    "source_key": "NIFSO",
+    "id": "179",
+    "sourceUrl": "https://www.nifs.ac.jp/en/about/overview.html",
+    "sourceNote": "Research and graduate collaboration description"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "Nagoya University",
+    "type": "University",
+    "source_key": "NIFSO",
+    "id": "180",
+    "sourceUrl": "https://www.nifs.ac.jp/en/about/overview.html",
+    "sourceNote": "Research and graduate collaboration description"
+  },
+  {
+    "section": "Asia",
+    "country": "Japan",
+    "organization": "SOKENDAI — The Graduate University for Advanced Studies",
+    "type": "University",
+    "source_key": "NIFSO",
+    "id": "181",
+    "sourceUrl": "https://www.nifs.ac.jp/en/about/overview.html",
+    "sourceNote": "Research and graduate collaboration description"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Korea Institute of Fusion Energy (KFE)",
+    "type": "Research institute",
+    "source_key": "IAEA22",
+    "id": "182",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Korea Advanced Institute of Science and Technology (KAIST)",
+    "type": "University",
+    "source_key": "KAIST",
+    "id": "183",
+    "sourceUrl": "https://nuclear.kaist.ac.kr/eng/research/the_lap.php?category=003",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Seoul National University",
+    "type": "University",
+    "source_key": "SNU",
+    "id": "184",
+    "sourceUrl": "https://nucleng.snu.ac.kr/en/research/lab?category=fusion&mode=list",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Ulsan National Institute of Science and Technology (UNIST)",
+    "type": "University",
+    "source_key": "UNIST",
+    "id": "185",
+    "sourceUrl": "https://research.unist.ac.kr/wp-content/uploads/2026/01/2025-UNIST-Faculty-Research-Profiles.pdf",
+    "sourceNote": "Fusion laboratory research description"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Hanyang University",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "186",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "South Korea",
+    "organization": "Pohang University of Science and Technology (POSTECH)",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "187",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "India",
+    "organization": "Institute for Plasma Research (IPR), including CPP-IPR and ITER-India",
+    "type": "Research institute",
+    "source_key": "IPR",
+    "id": "188",
+    "sourceUrl": "https://ipr.res.in/research-area",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Asia",
+    "country": "Kazakhstan",
+    "organization": "National Nuclear Center — Institute of Atomic Energy",
+    "type": "Research institute",
+    "source_key": "KZ",
+    "id": "189",
+    "sourceUrl": "https://www.nnc.kz/en/news/show/745",
+    "sourceNote": "Research collaboration report, November 2026"
+  },
+  {
+    "section": "Asia",
+    "country": "Thailand",
+    "organization": "Thailand Institute of Nuclear Technology (TINT)",
+    "type": "Research institute",
+    "source_key": "TH",
+    "id": "190",
+    "sourceUrl": "https://conferences.iaea.org/event/359/contributions/29411/",
+    "sourceNote": "Research contribution, 2023"
+  },
+  {
+    "section": "Asia",
+    "country": "Malaysia",
+    "organization": "University of Malaya — Plasma Technology Research Centre",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "191",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Asia",
+    "country": "Pakistan",
+    "organization": "Pakistan Atomic Energy Commission — National Tokamak Fusion Programme",
+    "type": "Research organization",
+    "source_key": "IAEA22",
+    "id": "192",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Asia",
+    "country": "Iran",
+    "organization": "Atomic Energy Organization of Iran",
+    "type": "Research organization",
+    "source_key": "IAEA22",
+    "id": "193",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Asia",
+    "country": "Iran",
+    "organization": "Islamic Azad University — Plasma Physics Research Center",
+    "type": "University",
+    "source_key": "IAEA22",
+    "id": "194",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Kurchatov Institute",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "195",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Budker Institute of Nuclear Physics",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "196",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Ioffe Institute",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "197",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Efremov Institute (NIIEFA)",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "198",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Institute of Applied Physics, Russian Academy of Sciences",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "199",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "National Research Nuclear University MEPhI",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "200",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Russia",
+    "country": "Russia",
+    "organization": "Troitsk Institute for Innovation and Fusion Research (TRINITI)",
+    "type": "Research institute",
+    "source_key": "RU",
+    "id": "201",
+    "sourceUrl": "https://www.triniti.ru/en/company/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Oceania",
+    "country": "Australia",
+    "organization": "Australian National University",
+    "type": "University",
+    "source_key": "ANU",
+    "id": "202",
+    "sourceUrl": "https://iceds.anu.edu.au/fusion-power",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Oceania",
+    "country": "Australia",
+    "organization": "UNSW Sydney",
+    "type": "University",
+    "source_key": "UNSW",
+    "id": "203",
+    "sourceUrl": "https://www.unsw.edu.au/engineering/our-schools/mechanical-and-manufacturing-engineering/our-research/research-groups/energy-resilience/nuclear-energy",
+    "sourceNote": "Fusion materials research description"
+  },
+  {
+    "section": "Oceania",
+    "country": "Australia",
+    "organization": "University of Sydney",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "204",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Argentina",
+    "organization": "Instituto de Física Rosario (CONICET–UNR)",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "205",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Brazil",
+    "organization": "University of São Paulo",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "206",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Brazil",
+    "organization": "University of Campinas (UNICAMP)",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "207",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Brazil",
+    "organization": "National Institute for Space Research (INPE)",
+    "type": "Research institute",
+    "source_key": "ITER",
+    "id": "208",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Chile",
+    "organization": "Pontificia Universidad Católica de Chile",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "209",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Costa Rica",
+    "organization": "Tecnológico de Costa Rica — PlasmaTEC",
+    "type": "University",
+    "source_key": "TEC",
+    "id": "210",
+    "sourceUrl": "https://www.tec.ac.cr/en/laboratorio-plasmas-energia-fusion-aplicaciones",
+    "sourceNote": "Fusion research programme description"
+  },
+  {
+    "section": "Latin America",
+    "country": "Mexico",
+    "organization": "National Autonomous University of Mexico (UNAM)",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "211",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Mexico",
+    "organization": "Instituto Politécnico Nacional — CICATA",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "212",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Latin America",
+    "country": "Mexico",
+    "organization": "Universidad Autónoma de Nuevo León",
+    "type": "University",
+    "source_key": "ITER",
+    "id": "213",
+    "sourceUrl": "https://www.iter.org/scientists/worldwide-fusion-links",
+    "sourceNote": "Directory; group scope/current status should be checked"
+  },
+  {
+    "section": "Africa",
+    "country": "Libya",
+    "organization": "Tajoura Nuclear Research Centre",
+    "type": "Research institute",
+    "source_key": "IAEA22",
+    "id": "214",
+    "sourceUrl": "https://www-pub.iaea.org/MTCD/Publications/PDF/CRCP-FUS-001webRev.pdf",
+    "sourceNote": "2022 device survey; present operating status NOT verified"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Acceleron Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "215",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Anubal Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "216",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Avalanche Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "217",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Blue Laser Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "218",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Commonwealth Fusion Systems",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "219",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Electric Fusion Systems",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "220",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "EX-Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "221",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "First Light Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "222",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Focused Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "223",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Fuse",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "224",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Gauss Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "225",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "General Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "226",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "GenF",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "227",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "HB11 Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "228",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Helical Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "229",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Helicity Space",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "230",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Helion Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "231",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Inertia Enterprises",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "232",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Kyoto Fusioneering",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "233",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "LaserFusionX",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "234",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Longview Fusion Energy Systems",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "235",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "LPPFusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "236",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Maritime Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "237",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Marvel Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "238",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Magneto-Inertial Fusion Technologies (MIFTI)",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "239",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "NearStar Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "240",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Novatron Fusion Group",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "241",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "nT-Tao",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "242",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "OpenStar Technologies",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "243",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Pacific Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "244",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Proxima Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "245",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Realta Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "246",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Renaissance Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "247",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "SHINE Technologies",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "248",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Stellarex",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "249",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "TAE Technologies",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "250",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Terra Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "251",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Thea Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "252",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Tibbar Plasma Technologies",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "253",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Tokamak Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "254",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Type One Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "255",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Xcimer Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "256",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Zap Energy",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIA25",
+    "id": "257",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/12/FIA-2025-Year-in-Review.pdf",
+    "sourceNote": "Company roster, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Astral Systems",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIAREPORT",
+    "id": "258",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/07/2025-Global-Fusion-Industry-Report.pdf",
+    "sourceNote": "Industry survey, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Deutelio",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIAREPORT",
+    "id": "259",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/07/2025-Global-Fusion-Industry-Report.pdf",
+    "sourceNote": "Industry survey, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Energy Matter Conversion Corporation (EMC2)",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIAREPORT",
+    "id": "260",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/07/2025-Global-Fusion-Industry-Report.pdf",
+    "sourceNote": "Industry survey, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Princeton Satellite Systems",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIAREPORT",
+    "id": "261",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/07/2025-Global-Fusion-Industry-Report.pdf",
+    "sourceNote": "Industry survey, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Pulsar Fusion",
+    "type": "Fusion developer / technology company",
+    "source_key": "FIAREPORT",
+    "id": "262",
+    "sourceUrl": "https://www.fusionindustryassociation.org/wp-content/uploads/2025/07/2025-Global-Fusion-Industry-Report.pdf",
+    "sourceNote": "Industry survey, 2025; present status not independently audited"
+  },
+  {
+    "section": "Companies",
+    "country": "China",
+    "organization": "Energy Singularity",
+    "type": "Fusion developer",
+    "source_key": "MEXT",
+    "id": "263",
+    "sourceUrl": "https://www.mext.go.jp/content/20220707-mxt_kaisen000031043_6.pdf",
+    "sourceNote": "Government industry overview, 2023; current status should be checked"
+  },
+  {
+    "section": "Companies",
+    "country": "China",
+    "organization": "ENN Science and Technology Development",
+    "type": "Fusion developer",
+    "source_key": "MEXT",
+    "id": "264",
+    "sourceUrl": "https://www.mext.go.jp/content/20220707-mxt_kaisen000031043_6.pdf",
+    "sourceNote": "Government industry overview, 2023; current status should be checked"
+  },
+  {
+    "section": "Companies",
+    "country": "China",
+    "organization": "Neo Fusion",
+    "type": "Fusion developer",
+    "source_key": "MEXT",
+    "id": "265",
+    "sourceUrl": "https://www.mext.go.jp/content/20220707-mxt_kaisen000031043_6.pdf",
+    "sourceNote": "Government industry overview, 2023; current status should be checked"
+  },
+  {
+    "section": "Companies",
+    "country": "China",
+    "organization": "Startorus Fusion",
+    "type": "Fusion developer",
+    "source_key": "START",
+    "id": "266",
+    "sourceUrl": "https://www.startorus.com/",
+    "sourceNote": "Company research description"
+  },
+  {
+    "section": "Companies",
+    "country": "China",
+    "organization": "HHMAX-ENERGY",
+    "type": "Fusion developer",
+    "source_key": "HH",
+    "id": "267",
+    "sourceUrl": "https://en.hhmax-energy.com/",
+    "sourceNote": "Company research description"
+  },
+  {
+    "section": "Companies",
+    "country": "India",
+    "organization": "Pranos Fusion",
+    "type": "Fusion developer",
+    "source_key": "PRANOS",
+    "id": "268",
+    "sourceUrl": "https://www.pranosfusion.energy/",
+    "sourceNote": "Company research description"
+  },
+  {
+    "section": "Companies",
+    "country": "Not checked",
+    "organization": "Horne Technologies (hornetechnologies.com)",
+    "type": "Fusion developer",
+    "source_key": "HORNE",
+    "id": "269",
+    "sourceUrl": "https://www.hornetechnologies.com/",
+    "sourceNote": "Company research description"
+  },
+  {
+    "section": "Companies",
+    "country": "Spain",
+    "organization": "SMART Fusion Energy",
+    "type": "Fusion developer",
+    "source_key": "SMART",
+    "id": "270",
+    "sourceUrl": "https://www.us.es/bous-numeros/numero-14-6-de-mayo-2026/acuerdo-del-pleno-del-consejo-social-de-22-de-enero-de-2026",
+    "sourceNote": "University research/spin-off documentation, 2026"
+  },
+  {
+    "section": "Companies",
+    "country": "United States",
+    "organization": "General Atomics",
+    "type": "Fusion research / engineering company",
+    "source_key": "GA",
+    "id": "271",
+    "sourceUrl": "https://www.ga.com/magnetic-fusion/",
+    "sourceNote": "Research programme description"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "C42X",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "272",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "digiLab",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "273",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Fiat Lux",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "274",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Next Step Fusion",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "275",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Firefly Fusion",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "276",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Companies",
+    "country": "International roster",
+    "organization": "Nusenics",
+    "type": "Fusion technology / research company",
+    "source_key": "D3D",
+    "id": "277",
+    "sourceUrl": "https://d3dfusion.org/the-diii-d-team/",
+    "sourceNote": "Named participating fusion research institution"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Colorado School of Mines",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "278",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Dartmouth College",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "279",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Dickinson College",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "280",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Fisk University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "281",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Florida A&M University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "282",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Hampton University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "283",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Lawrence University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "284",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Lehigh University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "285",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "New York University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "286",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Old Dominion University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "287",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Pennsylvania State University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "288",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Rensselaer Polytechnic Institute",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "289",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Southeastern Louisiana University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "290",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Stanford University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "291",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Swarthmore College",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "292",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Alaska (campus unspecified in source)",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "293",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Colorado (campus unspecified in source)",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "294",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Florida",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "295",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Missouri University of Science and Technology",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "296",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Montana",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "297",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Nevada, Reno",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "298",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "University of Vermont",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "299",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "Virginia Commonwealth University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "300",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Additional university leads",
+    "country": "United States",
+    "organization": "West Virginia University",
+    "type": "University",
+    "source_key": "UFA",
+    "id": "301",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/education",
+    "sourceNote": "Broader plasma/fusion research OR education directory; fusion scope needs confirmation"
+  },
+  {
+    "section": "Coordination",
+    "country": "International; France host",
+    "organization": "ITER Organization",
+    "type": "International research organization",
+    "source_key": "ITERORG",
+    "id": "302",
+    "sourceUrl": "https://www.iter.org/about/iter-members",
+    "sourceNote": "International fusion project"
+  },
+  {
+    "section": "Coordination",
+    "country": "Europe",
+    "organization": "EUROfusion",
+    "type": "Research consortium",
+    "source_key": "EUABOUT",
+    "id": "303",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/",
+    "sourceNote": "Research coordination and funding"
+  },
+  {
+    "section": "Coordination",
+    "country": "International; Austria host",
+    "organization": "International Atomic Energy Agency — fusion programmes",
+    "type": "Intergovernmental organization",
+    "source_key": "PORTAL",
+    "id": "304",
+    "sourceUrl": "https://nucleus.iaea.org/sites/fusion-portal/SitePages/Home.aspx",
+    "sourceNote": "Research coordination and knowledge infrastructure"
+  },
+  {
+    "section": "Coordination",
+    "country": "International",
+    "organization": "IEA Technology Collaboration Programme on Tokamak Programmes",
+    "type": "Research collaboration programme",
+    "source_key": "CTP",
+    "id": "305",
+    "sourceUrl": "https://ctp.euro-fusion.org/",
+    "sourceNote": "Research coordination"
+  },
+  {
+    "section": "Coordination",
+    "country": "United States",
+    "organization": "University Fusion Association",
+    "type": "Academic association",
+    "source_key": "UFABOUT",
+    "id": "306",
+    "sourceUrl": "https://sites.google.com/site/universityfusionassociation/",
+    "sourceNote": "Academic coordination and advocacy"
+  },
+  {
+    "section": "Coordination",
+    "country": "International",
+    "organization": "Fusion Industry Association",
+    "type": "Industry association",
+    "source_key": "FIABOUT",
+    "id": "307",
+    "sourceUrl": "https://www.fusionindustryassociation.org/about/members/",
+    "sourceNote": "Industry association; not a fusion laboratory"
+  },
+  {
+    "section": "Coordination",
+    "country": "Austria",
+    "organization": "Austrian Academy of Sciences — Fusion@ÖAW",
+    "type": "National research coordination",
+    "source_key": "AT",
+    "id": "308",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/austria/",
+    "sourceNote": "Research programme/consortium description"
+  },
+  {
+    "section": "Coordination",
+    "country": "Romania",
+    "organization": "Institute of Atomic Physics (IFA)",
+    "type": "National research coordination",
+    "source_key": "RO",
+    "id": "309",
+    "sourceUrl": "https://euro-fusion.org/eurofusion/members/romania/",
+    "sourceNote": "Research programme description"
+  }
+]

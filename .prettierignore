@@ -1,0 +1,8 @@
+node_modules
+.next
+.taste-skill
+work
+package-lock.json
+next-env.d.ts
+data/organizations.json
+docs/worldwide-fusion-research-directory.md
