@@ -80,6 +80,8 @@ export type SearchOptions = {
   theses: boolean;
 };
 export type Person = {
+  officialGroup?: string;
+  officialRoleSource?: string;
   key: string;
   name: string;
   id?: string;

@@ -20,6 +20,18 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import directory from "@/data/organizations.json";
+import { ThemeSwitch } from "./components/theme-switch";
+import { ProfilePanel, Recommendations } from "./components/matching-panel";
+import {
+  matchingStateSchema,
+  verificationSchema,
+  contactCandidates,
+  recommendationGroups,
+  type MatchingState,
+  type Recommendation,
+  type FeedbackKind,
+} from "@/lib/matching";
+import { readCache, writeCache, clearCache } from "@/lib/browser-cache";
 import {
   expand,
   frenchQueries,
@@ -97,7 +109,16 @@ function download(name: string, data: string, type = "application/json") {
 
 export default function Atlas() {
   const [view, setView] = useState("discover");
-  const [tab, setTab] = useState("people");
+  const [tab, setTab] = useState("matches");
+  const [matching, setMatching] = useState<MatchingState>(() =>
+    matchingStateSchema.parse({}),
+  );
+  const [matchingReady, setMatchingReady] = useState(false);
+  const [checking, setChecking] = useState<string>();
+  const [cacheHits, setCacheHits] = useState(0);
+  const [cacheNotice, setCacheNotice] = useState("");
+  const [autoCheck, setAutoCheck] = useState(true);
+  const checkingLock = useRef(false);
   const [topic, setTopic] = useState("");
   const [queryText, setQueryText] = useState("");
   const [country, setCountry] = useState("");
@@ -124,6 +145,7 @@ export default function Atlas() {
   const [storageReady, setStorageReady] = useState(false);
   const [config, setConfig] = useState<{
     openalexKey: boolean;
+    officialSearch: boolean;
     contactEmail: boolean;
     passwordRequired: boolean;
   }>();
@@ -149,6 +171,15 @@ export default function Atlas() {
   }, [selectedSnapshot?.key]);
   useEffect(() => {
     const year = new Date().getUTCFullYear();
+    try {
+      const raw = localStorage.getItem("fusion-atlas-matching-v2");
+      if (raw) setMatching(matchingStateSchema.parse(JSON.parse(raw)));
+      setMatchingReady(true);
+    } catch {
+      setError(
+        "Could not read your matching profile. A session backup can restore it.",
+      );
+    }
     setFrom(year - 6);
     setTo(year);
     fetch("/api/research")
@@ -184,6 +215,19 @@ export default function Atlas() {
         );
       }
   }, [saved, storageReady]);
+  useEffect(() => {
+    if (!matchingReady) return;
+    try {
+      localStorage.setItem(
+        "fusion-atlas-matching-v2",
+        JSON.stringify(matching),
+      );
+    } catch {
+      setError(
+        "Browser storage is full. Save a session to keep your profile and research.",
+      );
+    }
+  }, [matching, matchingReady]);
   const people = useMemo(
     () =>
       run
@@ -198,7 +242,9 @@ export default function Atlas() {
     [run, includeUnknown],
   );
   const selected = selectedSnapshot
-    ? people.find((p) => p.key === selectedSnapshot.key) ||
+    ? (selectedSnapshot.officialRoleSource
+        ? selectedSnapshot
+        : people.find((p) => p.key === selectedSnapshot.key)) ||
       (selectedSnapshot.key.startsWith("unverified:")
         ? people.find(
             (p) =>
@@ -213,6 +259,95 @@ export default function Atlas() {
   const visiblePeople = supervisorsOnly
     ? people.filter((p) => p.supervisedWorkIds?.length)
     : people;
+  const ranked = useMemo(
+    () =>
+      run ? contactCandidates(people, run.topic, matching, run.options) : [],
+    [people, run, matching],
+  );
+  function feedback(c: Recommendation, kind?: FeedbackKind) {
+    if (!run) return;
+    setMatching((s) => ({
+      ...s,
+      feedback: [
+        ...s.feedback.filter(
+          (f) =>
+            !(
+              (f.kind === "contacted" ||
+                normalize(f.topic) === normalize(run.topic)) &&
+              f.personKey === c.person.key
+            ),
+        ),
+        ...(kind
+          ? [
+              {
+                personKey: c.person.key,
+                topic: run.topic,
+                kind,
+                terms: c.matched.slice(0, 20),
+                updatedAt: new Date().toISOString(),
+              },
+            ]
+          : []),
+      ].slice(-1000),
+    }));
+  }
+  async function checkContacts(
+    list: Recommendation[],
+    signal: AbortSignal,
+    pageUrl?: string,
+  ) {
+    for (const candidate of list) {
+      if (signal.aborted) break;
+      setChecking(candidate.person.key);
+      setProgress("Checking official pages for " + candidate.person.name + "…");
+      const inst =
+        candidate.person.institutions.find(
+          (i) => (i.id || normalize(i.name)) === candidate.groupKey,
+        ) || candidate.person.institutions[0];
+      try {
+        const d = await api(
+          {
+            op: "verify",
+            personKey: candidate.person.key,
+            name: candidate.person.name,
+            institutionId: inst?.id.startsWith("https://openalex.org/I")
+              ? inst.id
+              : undefined,
+            institutionName: inst?.name,
+            pageUrl,
+          },
+          signal,
+        );
+        const v = verificationSchema.parse(d.verification);
+        if (!signal.aborted)
+          setMatching((s) => ({
+            ...s,
+            verifications: [
+              ...s.verifications.filter((o) => o.personKey !== v.personKey),
+              v,
+            ].slice(-300),
+          }));
+      } catch (e) {
+        if (!signal.aborted) setError((e as Error).message);
+      }
+    }
+    setChecking(undefined);
+  }
+  async function verify(list: Recommendation[], url?: string) {
+    if (busy || checkingLock.current) return;
+    checkingLock.current = true;
+    const operation = new AbortController();
+    controller.current = operation;
+    setBusy(true);
+    setError("");
+    try {
+      await checkContacts(list, operation.signal, url);
+    } finally {
+      setBusy(false);
+      checkingLock.current = false;
+      controller.current = null;
+    }
+  }
   const orgs = useMemo(
     () =>
       directory.filter(
@@ -229,7 +364,7 @@ export default function Atlas() {
     .map((s) => s.trim())
     .filter(Boolean)
     .slice(0, 8);
-  const [sweeps, setSweeps] = useState(2);
+  const [sweeps, setSweeps] = useState(0);
   async function api(body: unknown, signal?: AbortSignal) {
     const r = await fetch("/api/research", {
       method: "POST",
@@ -301,7 +436,7 @@ export default function Atlas() {
       setError("Enter a valid publication year range.");
       return;
     }
-    setRun(snapshot);
+    setRun({ ...snapshot, tasks: snapshot.tasks.map((t) => ({ ...t })) });
     setAdvanced(false);
     setBusy(true);
     stop.current = false;
@@ -312,49 +447,118 @@ export default function Atlas() {
     setGraphNext(undefined);
     setLimit(40);
     if (!existing) setSupervisorsOnly(false);
-    setTab("people");
+    setTab("matches");
     setView("discover");
     const failures = new Set<string>();
+    const shortPass = !existing && sweeps === 0;
+    const operation = new AbortController();
+    controller.current = operation;
+    setCacheHits(0);
+    const enabledTasks = snapshot.tasks
+      .map((t, i) => ({ t, i }))
+      .filter(({ t }) => !t.done);
+    const priority = [
+      "openalex",
+      "thesesfr",
+      "datacite",
+      "hal",
+      "openaire",
+      "crossref",
+      "arxiv",
+    ];
+    const starterTasks = enabledTasks
+      .filter(({ t }) => t.query === queries[0])
+      .sort(
+        (a, b) =>
+          priority.indexOf(a.t.provider) - priority.indexOf(b.t.provider),
+      )
+      .slice(0, 3);
     try {
-      for (let round = 0; round < (existing ? 1 : sweeps); round++) {
-        for (let i = 0; i < snapshot.tasks.length; i++) {
-          if (stop.current) break;
-          const t = snapshot.tasks[i];
-          if (t.done || failures.has(`${t.provider}:${t.query}`)) continue;
-          setProgress(
-            `${providerNames[t.provider]} · query ${i + 1}/${snapshot.tasks.length} · page ${t.page}`,
-          );
-          controller.current = new AbortController();
-          try {
-            const d = await api(
-              {
+      for (
+        let round = 0;
+        round < (existing || shortPass ? 1 : sweeps);
+        round++
+      ) {
+        const queue = shortPass ? [...starterTasks] : [...enabledTasks];
+        const worker = async () => {
+          while (queue.length && !operation.signal.aborted) {
+            const { t, i } = queue.shift()!;
+            if (t.done || failures.has(`${t.provider}:${t.query}`)) continue;
+            setProgress(
+              `${providerNames[t.provider]} · query ${i + 1}/${snapshot.tasks.length} · page ${t.page}`,
+            );
+            try {
+              const body = {
                 op: "search",
                 provider: t.provider,
                 query: t.query,
                 page: t.page,
                 cursor: t.cursor,
                 options: snapshot.options,
-              },
-              controller.current.signal,
-            );
-            snapshot.works = mergeWorks([...snapshot.works, ...d.works]);
-            t.total = d.total;
-            t.error = undefined;
-            t.done = !d.next;
-            if (d.next) {
-              t.cursor = d.next;
-              t.page++;
+              };
+              const key =
+                "search:v2:" +
+                JSON.stringify(body) +
+                ":" +
+                (config?.openalexKey || false);
+              const cached = await readCache(key).catch(() => undefined);
+              const d = cached || (await api(body, operation.signal));
+              if (operation.signal.aborted) break;
+              if (cached) setCacheHits((n) => n + 1);
+              else void writeCache(key, d).catch(() => {});
+              snapshot.works = mergeWorks([...snapshot.works, ...d.works]);
+              t.total = d.total;
+              t.error = undefined;
+              t.done = !d.next;
+              if (d.next) {
+                t.cursor = d.next;
+                t.page++;
+              }
+              if (d.warnings?.length)
+                setMessages((m) => [...new Set([...m, ...d.warnings])]);
+            } catch (e) {
+              if (stop.current) break;
+              t.error = (e as Error).message;
+              failures.add(`${t.provider}:${t.query}`);
             }
-            if (d.warnings?.length)
-              setMessages((m) => [...new Set([...m, ...d.warnings])]);
-          } catch (e) {
-            if (stop.current) break;
-            t.error = (e as Error).message;
-            failures.add(`${t.provider}:${t.query}`);
+            setRun({
+              ...snapshot,
+              tasks: snapshot.tasks.map((t) => ({ ...t })),
+            });
           }
-          setRun({ ...snapshot, tasks: snapshot.tasks.map((t) => ({ ...t })) });
-        }
+        };
+        await Promise.all(
+          Array.from({ length: Math.min(3, queue.length) }, worker),
+        );
         if (stop.current) break;
+      }
+      if (autoCheck && !operation.signal.aborted && !existing) {
+        const candidates = contactCandidates(
+          peopleFrom(
+            snapshot.works,
+            snapshot.topic,
+            snapshot.options.country,
+            snapshot.options.institution?.id,
+          ),
+          snapshot.topic,
+          matching,
+          snapshot.options,
+        );
+        const pool = candidates
+          .filter(
+            (c) =>
+              c.person.institutions.length &&
+              !c.hidden &&
+              c.fit !== "Broad" &&
+              !c.groupSource &&
+              (!c.verification ||
+                Date.now() - Date.parse(c.verification.checkedAt) > 86400000),
+          )
+          .sort((a, b) => b.rank - a.rank);
+        const first = pool[0];
+        const second = pool.find((c) => c.groupKey !== first?.groupKey);
+        const top = [first, second].filter((c): c is Recommendation => !!c);
+        await checkContacts(top, operation.signal);
       }
     } finally {
       setRun({ ...snapshot, tasks: snapshot.tasks.map((t) => ({ ...t })) });
@@ -466,6 +670,10 @@ export default function Atlas() {
       const d = sessionSchema.parse(raw);
       setStorageReady(true);
       setRun(d);
+      if (d.matching) {
+        setMatching(d.matching);
+        setMatchingReady(true);
+      }
       if (d.shortlist)
         setSaved((v) => [
           ...v,
@@ -474,7 +682,7 @@ export default function Atlas() {
           ),
         ]);
       setError("");
-      setTab("people");
+      setTab("matches");
       setLimit(40);
       setProfile(undefined);
       setGraphNext(undefined);
@@ -568,13 +776,9 @@ export default function Atlas() {
         <div className="sidebar-bottom">
           <div className="scope-line">
             <span className="tiny-dot" />
-            Evidence before outreach
+            Undergraduate research
           </div>
-          <p>
-            Find the work. Trace the people.
-            <br />
-            Check the opportunity.
-          </p>
+          <p>Worldwide fusion research directory</p>
           <span className="small">Personal discovery workspace</span>
         </div>
       </aside>
@@ -588,15 +792,16 @@ export default function Atlas() {
             <h1>{title}</h1>
             <p>
               {view === "discover"
-                ? "Find the people behind the work you want to do."
+                ? "Find a supervisor for an undergraduate fusion research project."
                 : view === "organizations"
-                  ? "A starting map, not a boundary. Search beyond it to avoid missing labs."
+                  ? "Explore fusion institutions and look up their researchers."
                   : view === "shortlist"
                     ? "Research fit first. Confirm supervision, eligibility, and openings separately."
                     : "Free scholarly indexes, with a visible account of what was searched."}
             </p>
           </div>
           <div className="header-actions">
+            <ThemeSwitch />
             {run && (
               <button
                 disabled={busy}
@@ -609,6 +814,7 @@ export default function Atlas() {
                         ...run,
                         warnings: messages,
                         shortlist: saved,
+                        matching,
                       },
                       null,
                       2,
@@ -642,6 +848,13 @@ export default function Atlas() {
         )}
         {view === "discover" && (
           <>
+            <ProfilePanel
+              profile={matching.profile}
+              onChange={(profile) => {
+                setMatchingReady(true);
+                setMatching((s) => ({ ...s, profile }));
+              }}
+            />
             <section className="search-panel" aria-label="Research search">
               <div className="topic-row">
                 <label className="topic-label" htmlFor="topic">
@@ -794,15 +1007,30 @@ export default function Atlas() {
                         disabled={busy}
                         onChange={(e) => setSweeps(Number(e.target.value))}
                       >
-                        <option value={1}>1 page · reconnaissance</option>
+                        <option value={0}>
+                          Quick shortlist · up to 3 first pages
+                        </option>
+                        <option value={1}>
+                          1 page · all selected queries and sources
+                        </option>
                         <option value={2}>2 pages · broad search</option>
                         <option value={4}>4 pages · deeper search</option>
                       </select>
                     </label>
                     <p className="small">
-                      50 results per page, per query, per source. Continue adds
-                      another page. Thesis searches skip arXiv.
+                      Quick shortlist starts with your first query. Continue
+                      sweep covers the remaining sources and variants. Pages are
+                      cached for a day.
                     </p>
+                    <label className="check-label">
+                      <input
+                        type="checkbox"
+                        disabled={busy}
+                        checked={autoCheck}
+                        onChange={(e) => setAutoCheck(e.target.checked)}
+                      />
+                      Check official pages for the first two institution leads
+                    </label>
                   </div>
                   <div>
                     <label htmlFor="institution">Institution or city</label>
@@ -944,6 +1172,7 @@ export default function Atlas() {
                       {run.options.institution
                         ? " · " + run.options.institution.name
                         : ""}
+                      {cacheHits > 0 && ` · ${cacheHits} cached page(s)`}
                     </small>
                   </div>
                   <div>
@@ -969,6 +1198,11 @@ export default function Atlas() {
                   aria-label="Search results"
                 >
                   {[
+                    [
+                      "matches",
+                      "Recommended contacts",
+                      recommendationGroups(ranked).length,
+                    ],
                     ["people", "Researchers", people.length],
                     ["papers", "Papers & theses", run.works.length],
                     ["coverage", "Coverage", run.tasks.length],
@@ -988,6 +1222,31 @@ export default function Atlas() {
                     </button>
                   ))}
                 </div>
+                {tab === "matches" && (
+                  <Recommendations
+                    scope={run.options}
+                    topic={run.topic}
+                    studentProfile={matching.profile}
+                    candidates={ranked}
+                    busy={busy}
+                    checking={checking}
+                    savedKeys={saved.map((s) => s.person.key)}
+                    onSave={(c) => savePerson(c.person)}
+                    onExplore={(c) => {
+                      setTab("people");
+                      selectPerson(c.person);
+                    }}
+                    onVerify={(c, url) => void verify([c], url)}
+                    onVerifyTop={() =>
+                      void verify(
+                        recommendationGroups(ranked)
+                          .slice(0, 3)
+                          .map((g) => g.lead),
+                      )
+                    }
+                    onFeedback={feedback}
+                  />
+                )}
                 {tab === "people" && (
                   <>
                     <div className="results-tools">
@@ -1149,7 +1408,10 @@ export default function Atlas() {
                             )}
                             {selected.profileUrl && (
                               <Out href={selected.profileUrl}>
-                                Repository identity profile
+                                {selected.officialRoleSource ===
+                                selected.profileUrl
+                                  ? "Official group profile"
+                                  : "Repository identity profile"}
                               </Out>
                             )}
                             <Out
@@ -1205,6 +1467,14 @@ export default function Atlas() {
                                   </small>
                                 ))}
                             </div>
+                          )}
+                          {selected.officialRoleSource && (
+                            <p>
+                              <Out href={selected.officialRoleSource}>
+                                {selected.officialGroup} · official group
+                                listing
+                              </Out>
+                            </p>
                           )}
                           <h3>Authored works & supervised theses</h3>
                           {selected.works.slice(0, 12).map((w) => (
@@ -1481,6 +1751,13 @@ export default function Atlas() {
                   {s.person.institutions.map((i) => i.name).join(" · ") ||
                     "Affiliation to verify"}
                 </p>
+                {s.person.officialRoleSource && (
+                  <p>
+                    <Out href={s.person.officialRoleSource}>
+                      {s.person.officialGroup} · official group listing
+                    </Out>
+                  </p>
+                )}
                 <div className="shortlist-fields">
                   <label>
                     Follow-up stage
@@ -1650,6 +1927,37 @@ export default function Atlas() {
                   Kept in this page’s memory. This is a deployment password, not
                   an API key.
                 </p>
+              </div>
+            </div>
+            <div className="settings-row">
+              <div>
+                <h2>Official pages and search cache</h2>
+                <p>
+                  Known institution sites can be checked without an extra key.
+                </p>
+              </div>
+              <div>
+                <p>
+                  {config?.officialSearch
+                    ? "Brave official-site discovery is enabled."
+                    : "Optional BRAVE_SEARCH_API_KEY enables domain-specific search for deeper staff pages."}{" "}
+                  Profile and feedback stay in this browser. Search pages are
+                  reused for 24 hours.
+                </p>
+                <button
+                  disabled={busy}
+                  onClick={() => {
+                    void clearCache()
+                      .then(() => setCacheNotice("Search cache cleared."))
+                      .then(() => setCacheHits(0))
+                      .catch(() => setError("Unable to clear search cache."));
+                  }}
+                >
+                  Clear cached searches
+                </button>
+                <span className="small" role="status">
+                  {cacheNotice}
+                </span>
               </div>
             </div>
             <div className="settings-row">

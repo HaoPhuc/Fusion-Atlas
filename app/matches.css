@@ -1,0 +1,211 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.theme-switch {
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.theme-switch select {
+  width: auto;
+  min-height: 36px;
+}
+.profile-panel {
+  margin: 0 0 14px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+.profile-summary,
+.profile-summary > div,
+.recommendations-heading,
+.recommendation-title,
+.recommendation-actions,
+.alternative-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.profile-summary,
+.recommendations-heading,
+.recommendation-title,
+.alternative-contact {
+  justify-content: space-between;
+}
+.profile-summary > div {
+  min-width: 0;
+  flex: 1;
+}
+.profile-summary span {
+  overflow-wrap: anywhere;
+}
+.profile-fields,
+.recommendation-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  margin: 16px 0;
+}
+.profile-fields .span-two {
+  grid-column: 1 / -1;
+}
+.results-tabs {
+  flex-wrap: wrap;
+}
+.recommendations {
+  margin: 18px 0;
+}
+.recommendations-heading {
+  align-items: flex-start;
+}
+.recommendations-heading h2,
+.recommendation-title h3 {
+  margin: 0;
+  font-weight: 500;
+}
+.recommendations-heading p,
+.recommendation-title p {
+  margin: 5px 0;
+  color: var(--muted);
+}
+.recommendation-group {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  margin: 14px 0;
+  overflow-wrap: anywhere;
+}
+.recommendation {
+  padding: 18px;
+}
+.recommendation h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.recommendation-stage,
+.fit-label {
+  color: var(--blue);
+  font-size: 13px;
+}
+.recommendation-title h3 {
+  font-size: 20px;
+  margin-top: 3px;
+}
+.recommendation ul {
+  padding-left: 17px;
+  line-height: 1.6;
+  margin: 5px 0 12px;
+}
+.recommendation details,
+.group-context details,
+.excluded-leads {
+  font-size: 13px;
+  padding: 8px 0;
+}
+.recommendation details summary,
+.group-context details summary,
+.excluded-leads summary {
+  cursor: pointer;
+}
+.recommendation details label {
+  margin: 8px 0;
+}
+.recommended-works p {
+  margin: 10px 0;
+}
+.recommended-works p span,
+.recommended-works p a,
+.alternative-contact small {
+  display: block;
+}
+.recommended-works a,
+.source-passage a,
+.next-action a {
+  color: var(--blue);
+}
+.next-action {
+  border-left: 1px solid var(--rule);
+  padding-left: 18px;
+}
+.next-action p {
+  margin: 5px 0 10px;
+}
+.recommendation-actions {
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  margin-top: 10px;
+}
+.feedback-select select {
+  width: auto;
+  max-width: 100%;
+}
+.feedback-select {
+  white-space: nowrap;
+  flex-direction: row;
+  align-items: center;
+}
+.programme-routes {
+  border-top: 1px solid var(--border);
+  margin-top: 24px;
+  padding-top: 16px;
+}
+.programme-routes > div {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.programme-routes a {
+  color: var(--blue);
+}
+.source-passage {
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+.source-passage blockquote {
+  margin: 5px 0;
+  line-height: 1.5;
+}
+.group-context {
+  padding: 8px 18px;
+  border-top: 1px solid var(--rule);
+  background: var(--ground);
+  border-radius: 0 0 8px 8px;
+}
+.group-context p {
+  margin: 3px 0;
+}
+.alternative-contact {
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+.alternative-contact > span {
+  flex: 1;
+}
+.header-actions {
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) {
+  .recommendation-columns,
+  .profile-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .next-action {
+    padding: 12px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .profile-summary span {
+    flex-basis: 100%;
+  }
+  .recommendation {
+    padding: 14px;
+  }
+  .feedback-select {
+    flex-wrap: wrap;
+  }
+}

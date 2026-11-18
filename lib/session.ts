@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PROVIDERS } from "./types";
+import { matchingStateSchema } from "./matching";
 const str = z.string().max(30000);
 // Some older exports contain provider nulls for absent metadata.
 const optionalString = str.nullish().transform((v) => v ?? undefined);
@@ -29,7 +30,8 @@ const work = z.object({
   title: str,
   year: z.number(),
   type: str,
-  abstract: str,
+  // Repository descriptions can exceed 30,000 characters. Imports already cap the whole file at 25 MB.
+  abstract: z.string().max(25_000_000),
   url: str,
   pdf: optionalString,
   authors: z.array(author).max(2000),
@@ -60,6 +62,8 @@ const work = z.object({
   retrievedAt: str,
 });
 const person = z.object({
+  officialGroup: optionalString,
+  officialRoleSource: optionalString,
   key: str,
   name: str,
   id: optionalString,
@@ -111,4 +115,5 @@ export const sessionSchema = z.object({
   works: z.array(work).max(20000),
   warnings: z.array(str).optional(),
   shortlist: shortlistSchema.optional(),
+  matching: matchingStateSchema.optional(),
 });

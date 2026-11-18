@@ -1,6 +1,19 @@
 # Delivery validation
 
-Checked 16 November 2026 (Europe/Amsterdam), version 1.1. Data-source responses are snapshots, not promises about future availability.
+## Supervisor matching and themes · version 1.2
+
+Checked 18 November 2026 using the local production build. All 36 tests, TypeScript checks and the Next.js production build passed.
+
+- A live **spectroscopy / Australia** quick pass retrieved 150 works and displayed 286 literature identities including unknown affiliations. After applying the location and role requirements, the contact view showed **one named contact**, Cormac Corr, among 125 in-scope identities. The official project page specifies vacation scholar and undergraduate project formats. Three other institutions had strong authors available for role checks. [ANU project](https://physics.anu.edu.au/study/projects/project.php?ProjectID=14)
+- The repeat reused all three scholarly pages from the browser cache. In one run with automatic website checks disabled, the first pass with an empty browser cache took 2.18 seconds and the repeat took 0.77 seconds. Server caches, network conditions and the source mix affect timings. Optional website reading adds time.
+- The live official-page reader recovered the leader field for Ivo Classen and DIFFER’s student eligibility wording. Wisconsin’s engineering site returned HTTP 403 to the reader. The app reported the access limit and retained the manually reviewed link. [DIFFER research groups](https://www.differ.nl/research/fusion) · [DIFFER placements](https://www.differ.nl/working-at/internships-and-thesis-projects)
+- Twelve Chromium checks covered the live recommendation, hiding and restoring a contact, saving the profile and contact, cache reuse, previous and current session imports, mobile layout, browser runtime errors and Dark, Light and System settings. A live session exposed two abstracts over 30,000 characters. They now round-trip with their full text inside the existing 25 MB file limit.
+- The layout inspector reported zero failures or warnings at 1440, 768 and 390 px. The contact screen was also inspected with real search results. [Desktop contact view](screenshots/contact-dark.jpg) · [Mobile contact view](screenshots/contact-mobile.jpg)
+- The ten reviewed individual contacts span five institutions. The seven scholarly indexes can surface additional groups worldwide. Source records and named contacts do not establish current openings. Optional authenticated Brave search and a live Vercel deployment were outside this test.
+
+## Previous release · version 1.1
+
+Checked 16 November 2026 (Europe/Amsterdam). The following results describe the earlier release.
 
 ## Code and build
 

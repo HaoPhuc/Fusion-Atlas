@@ -482,6 +482,21 @@ export async function findInstitutions(query: string, city = false) {
     ror: i.ror,
   }));
 }
+export async function institutionWebsite(id: string): Promise<Institution> {
+  if (!/^https:\/\/openalex.org\/I\d+$/.test(id))
+    throw new ProviderError("Invalid institution identifier.", 400);
+  const d = await request(
+    "openalex",
+    `/institutions/${id.split("/").pop()}`,
+    {},
+  );
+  return {
+    id: d.id,
+    name: d.display_name,
+    country: d.country_code,
+    url: safeUrl(d.homepage_url),
+  };
+}
 export async function expandGraph(
   id: string,
   mode: "author" | "citations" | "references",

@@ -338,14 +338,20 @@ export function peopleFrom(
       p.corresponding ||= !!a.corresponding;
     }
   }
+  const searchTexts = new WeakMap<Work, string>();
   for (const p of people.values()) {
     p.works.sort((a, b) => b.year - a.year);
     p.matched = tokens.filter((t) =>
-      p.works.some((w) =>
-        normalize(
-          w.title + " " + w.abstract + " " + (w.keywords || []).join(" "),
-        ).includes(t),
-      ),
+      p.works.some((w) => {
+        let text = searchTexts.get(w);
+        if (text === undefined) {
+          text = normalize(
+            [w.title, w.abstract, ...(w.keywords || [])].join(" "),
+          );
+          searchTexts.set(w, text);
+        }
+        return text.includes(t);
+      }),
     );
     // Research fit only. No citation prestige, authorship-order PI guess, or eligibility inference.
     p.score =

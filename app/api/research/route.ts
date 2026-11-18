@@ -9,10 +9,22 @@ import {
   thesisDetails,
 } from "@/lib/providers";
 import { PROVIDERS } from "@/lib/types";
+import { verifyCandidate } from "@/lib/official-pages";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 const identifier = z.string().regex(/^https:\/\/openalex.org\/[IAW]\d+$/);
 const schema = z.discriminatedUnion("op", [
+  z.object({
+    op: z.literal("verify"),
+    personKey: z.string().min(1).max(500),
+    name: z.string().min(3).max(200),
+    institutionId: z
+      .string()
+      .regex(/^https:\/\/openalex.org\/I\d+$/)
+      .optional(),
+    institutionName: z.string().max(300).optional(),
+    pageUrl: z.string().url().max(2048).optional(),
+  }),
   z.object({
     op: z.literal("thesis"),
     nnt: z.string().regex(/^[12][0-9]{3}[A-Z0-9]{8}$/),
@@ -81,6 +93,7 @@ export async function GET() {
     {
       openalexKey: !!process.env.OPENALEX_API_KEY,
       contactEmail: !!process.env.CONTACT_EMAIL,
+      officialSearch: !!process.env.BRAVE_SEARCH_API_KEY,
       passwordRequired: !!process.env.SITE_PASSWORD,
       providers: PROVIDERS,
     },
@@ -117,7 +130,8 @@ export async function POST(req: NextRequest) {
       );
     const v = parsed.data;
     let result;
-    if (v.op === "thesis") result = await thesisDetails(v.nnt);
+    if (v.op === "verify") result = { verification: await verifyCandidate(v) };
+    else if (v.op === "thesis") result = await thesisDetails(v.nnt);
     else if (v.op === "institutions")
       result = { institutions: await findInstitutions(v.query, v.city) };
     else if (v.op === "graph")
