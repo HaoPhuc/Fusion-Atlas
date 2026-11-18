@@ -229,9 +229,24 @@ export function mergeWorks(input: Work[]): Work[] {
   return groups;
 }
 export function uniqueInstitutions(values: Institution[]) {
-  return [
-    ...new Map(values.map((i) => [i.id || normalize(i.name), i])).values(),
-  ];
+  const result = new Map<string, Institution>();
+  for (const i of values) {
+    const key = i.id || normalize(i.name),
+      old = result.get(key);
+    result.set(
+      key,
+      old?.lat !== undefined && i.lat === undefined
+        ? {
+            ...i,
+            city: old.city,
+            lat: old.lat,
+            lon: old.lon,
+            country: old.country,
+          }
+        : i,
+    );
+  }
+  return [...result.values()];
 }
 function personKey(a: Author, w: Work) {
   return a.orcid

@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   findInstitutions,
   searchProvider,
+  searchRegionalPage,
   expandGraph,
   ProviderError,
   thesisDetails,
@@ -36,6 +37,11 @@ const schema = z.discriminatedUnion("op", [
   }),
   z.object({
     op: z.literal("search"),
+    countries: z
+      .array(z.string().regex(/^[A-Z]{2}$/))
+      .min(1)
+      .max(100)
+      .optional(),
     provider: z.enum(PROVIDERS),
     query: z.string().trim().min(2).max(250),
     page: z.number().int().min(1).max(200).default(1),
@@ -136,6 +142,14 @@ export async function POST(req: NextRequest) {
       result = { institutions: await findInstitutions(v.query, v.city) };
     else if (v.op === "graph")
       result = await expandGraph(v.id, v.mode, v.page, v.cursor);
+    else if (v.countries && v.provider === "openalex")
+      result = await searchRegionalPage(
+        v.query,
+        v.page,
+        v.cursor,
+        v.countries,
+        v.options,
+      );
     else
       result = await searchProvider(
         v.provider,

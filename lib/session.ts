@@ -1,3 +1,4 @@
+import { boardSchema, countryCode } from "./regions";
 import { z } from "zod";
 import { PROVIDERS } from "./types";
 import { matchingStateSchema } from "./matching";
@@ -9,6 +10,8 @@ const institution = z.object({
   name: str,
   country: optionalString,
   city: optionalString,
+  lat: z.number().min(-90).max(90).optional(),
+  lon: z.number().min(-180).max(180).optional(),
   url: optionalString,
   ror: optionalString,
 });
@@ -99,10 +102,12 @@ export const sessionSchema = z.object({
       institution: institution.optional(),
     })
     .refine((o) => o.from <= o.to),
+  board: boardSchema.optional(),
   tasks: z
     .array(
       z.object({
         provider: z.enum(PROVIDERS),
+        countries: z.array(countryCode).min(1).max(100).optional(),
         query: z.string().min(2).max(250),
         page: z.number().int().min(1).max(200),
         cursor: str.optional(),
@@ -111,7 +116,7 @@ export const sessionSchema = z.object({
         error: str.optional(),
       }),
     )
-    .max(64),
+    .max(512),
   works: z.array(work).max(20000),
   warnings: z.array(str).optional(),
   shortlist: shortlistSchema.optional(),

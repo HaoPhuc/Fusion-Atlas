@@ -1,3 +1,65 @@
+.region-settings {
+  margin: 12px 0;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0 16px;
+}
+.region-fields {
+  margin: 14px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.region-fields > label {
+  max-width: 420px;
+  margin-top: 10px;
+}
+.region-fields > button {
+  margin: 2px;
+}
+.destination-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.geo-section {
+  margin: 22px 0;
+}
+.geo-section h3 {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--control);
+}
+.geo-row {
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.geo-row h4 {
+  margin: 5px 0;
+  font-size: 17px;
+}
+.geo-row a {
+  color: var(--blue);
+}
+.geo-actions,
+.vacant {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.geo-row details summary {
+  cursor: pointer;
+}
+.country-swap {
+  max-width: 230px;
+  margin-bottom: 12px;
+}
+.vacant {
+  justify-content: space-between;
+  color: var(--muted);
+}
 .sr-only {
   position: absolute;
   width: 1px;

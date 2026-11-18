@@ -452,6 +452,58 @@ export async function searchProvider(
     );
   return { works, total, next, warnings };
 }
+export async function searchRegionalPage(
+  query: string,
+  page: number,
+  cursor: string | undefined,
+  scope: string[],
+  options: SearchOptions,
+) {
+  const result = await searchProvider("openalex", query, page, cursor, {
+    ...options,
+    country: scope.join("|"),
+  });
+  const institutions = result.works
+    .flatMap((w) => w.authors.flatMap((a) => a.institutions))
+    .filter(
+      (i) =>
+        i.country &&
+        scope.includes(i.country) &&
+        /^https:\/\/openalex.org\/I\d+$/.test(i.id),
+    );
+  const ids = [
+    ...new Set(institutions.map((i) => i.id.split("/").pop()!)),
+  ].slice(0, 80);
+  if (ids.length) {
+    try {
+      const response = await request("openalex", "/institutions", {
+        filter: "openalex_id:" + ids.join("|"),
+        select: "id,geo,country_code",
+        per_page: ids.length,
+      });
+      for (const row of array(response.results)) {
+        const geo = row.geo;
+        if (
+          !geo?.city ||
+          !Number.isFinite(geo.latitude) ||
+          !Number.isFinite(geo.longitude)
+        )
+          continue;
+        for (const i of institutions)
+          if (i.id === row.id && i.country === row.country_code) {
+            i.city = geo.city;
+            i.lat = geo.latitude;
+            i.lon = geo.longitude;
+          }
+      }
+    } catch (error) {
+      result.warnings.push(
+        "Institution coordinates unavailable. " + (error as Error).message,
+      );
+    }
+  }
+  return result;
+}
 export async function thesisDetails(nnt: string) {
   const d = await request(
     "thesesfr",

@@ -1,3 +1,4 @@
+import { regionSchema } from "./regions";
 import { z } from "zod";
 import { normalize, safeUrl } from "./research";
 import type { Person, Work } from "./types";
@@ -10,6 +11,7 @@ import {
 } from "./contact-routes";
 
 export const studentProfileSchema = z.object({
+  region: regionSchema.optional(),
   degree: z.string().max(120).default("Undergraduate"),
   year: z.string().max(40).default(""),
   skills: z.string().max(600).default(""),
@@ -67,12 +69,65 @@ export const feedbackKinds = [
 export type FeedbackKind = (typeof feedbackKinds)[number];
 export const feedbackSchema = z.object({
   personKey: z.string().max(500),
+  identity: z
+    .object({
+      name: z.string().max(300),
+      institutions: z.array(z.string().max(500)).max(100),
+      id: z.string().optional(),
+      orcid: z.string().optional(),
+    })
+    .optional(),
   topic: z.string().max(250),
   kind: z.enum(feedbackKinds),
   terms: z.array(z.string().max(80)).max(20),
   updatedAt: z.string(),
 });
 export type Feedback = z.infer<typeof feedbackSchema>;
+export function contactIdentity(p: Person) {
+  return {
+    name: p.name.slice(0, 300),
+    institutions: p.institutions.slice(0, 100).map((i) => i.name.slice(0, 500)),
+    id: p.id,
+    orcid: p.orcid,
+  };
+}
+export function sameContact(
+  p: Person,
+  identity:
+    ReturnType<typeof contactIdentity> | NonNullable<Feedback["identity"]>,
+) {
+  const orcid = (s: string) =>
+    s.replace(/^https?:\/\/orcid\.org\//i, "").toLowerCase();
+  if (p.orcid && identity.orcid)
+    return orcid(p.orcid) === orcid(identity.orcid);
+  if (p.id && identity.id) return p.id === identity.id;
+  if (
+    !p.institutions.some((i) =>
+      identity.institutions.some((n) => matchesInstitution(i.name, n)),
+    )
+  )
+    return false;
+  const a = normalize(p.name).split(" "),
+    b = normalize(identity.name).split(" ");
+  if (a.length < 2 || b.length < 2 || a[0][0] !== b[0][0]) return false;
+  if (a[0] !== b[0] && a[0].length > 1 && b[0].length > 1) return false;
+  return (
+    a
+      .slice(1)
+      .filter((s) => s.length > 1)
+      .join(" ") ===
+      b
+        .slice(1)
+        .filter((s) => s.length > 1)
+        .join(" ") && a.at(-1) === b.at(-1)
+  );
+}
+const listedIdentities = new Map(
+  listings.map((l) => {
+    const p = listedPerson(l);
+    return [p.key, contactIdentity(p)];
+  }),
+);
 export const matchingStateSchema = z.object({
   profile: studentProfileSchema.default(defaultProfile),
   verifications: z.array(verificationSchema).max(300).default([]),
@@ -225,10 +280,11 @@ export function rankCandidates(
   const skills = concepts(state.profile.skills);
   const styles = styleTerms[state.profile.style];
   const focus =
-    /\b(?:nuclear fusion|fusion (?:energy|reactor|plasma|power)|thermonuclear|tokamaks?|stellarators?|gyrokinetic\w*|divertors?|inertial confinement|magnetic confinement|plasma[- ]facing|deuterium[-– ]tritium|iter|w7[- ]x|jet tokamak|ignition (?:facility|target))\b/i;
+    /\b(?:nuclear fusion|fusion (?:energy|reactors?|plasmas?|power)|thermonuclear|tokamaks?|stellarators?|gyrokinetic\w*|divertors?|inertial confinement|magnetic confinement|plasma[- ]facing|deuterium[-– ]tritium|iter|w7[- ]x|jet tokamak|ignition (?:facility|target))\b/i;
   const feedback = state.feedback.filter(
     (f) => normalize(f.topic) === normalize(topic),
   );
+  const contacted = state.feedback.filter((f) => f.kind === "contacted");
   const latest = new Map(state.verifications.map((v) => [v.personKey, v]));
   return people
     .map((p): Recommendation => {
@@ -280,9 +336,11 @@ export function rankCandidates(
       const undergraduate =
         fresh && v?.evidence.find((e) => e.kind === "undergraduate");
       const own =
-        state.feedback.find(
-          (f) => f.personKey === p.key && f.kind === "contacted",
-        ) || feedback.find((f) => f.personKey === p.key);
+        contacted.find((f) => {
+          if (f.personKey === p.key) return true;
+          const identity = f.identity || listedIdentities.get(f.personKey);
+          return !!identity && sameContact(p, identity);
+        }) || feedback.find((f) => f.personKey === p.key);
       const supervised = (p.supervisedWorkIds?.length || 0) > 0;
       const preferredLocation =
         !state.profile.countries.length ||

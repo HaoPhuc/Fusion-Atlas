@@ -22,6 +22,8 @@ export type Institution = {
   name: string;
   country?: string;
   city?: string;
+  lat?: number;
+  lon?: number;
   url?: string;
   ror?: string;
 };
@@ -64,6 +66,7 @@ export type Work = {
   retrievedAt: string;
 };
 export type SearchTask = {
+  countries?: string[];
   provider: Provider;
   query: string;
   cursor?: string;

@@ -56,7 +56,22 @@ const differGroups = [
     "radiation defects corrosion materials irradiation",
   ],
 ];
+const epfl =
+  "https://www.epfl.ch/research/domains/swiss-plasma-center/research/theory/research_theory_research_areas/research_theory_experiment_interface/";
 export const listings: Listing[] = [
+  {
+    name: "Olivier Sauter",
+    role: "a listed group contact",
+    group: "Plasma Control & AI",
+    institution: "EPFL",
+    country: "CH",
+    topics:
+      "machine learning artificial intelligence control algorithms tokamak data driven experimental simulation stabilization TCV",
+    source: epfl,
+    route: epfl,
+    instruction:
+      "Open the group’s contact list and ask about undergraduate work on data-driven plasma control.",
+  },
   {
     name: "Cormac Corr",
     role: "project supervisor",
@@ -156,6 +171,11 @@ export function matchesInstitution(actual: string, filter?: string) {
   const a = normalize(actual).replace(/^the /, ""),
     b = normalize(filter).replace(/^the /, "");
   const aliases = [
+    [
+      "epfl",
+      "ecole polytechnique federale de lausanne",
+      "swiss federal institute of technology lausanne",
+    ],
     [
       "massachusetts institute of technology",
       "mit plasma science and fusion center",

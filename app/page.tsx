@@ -20,12 +20,21 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import directory from "@/data/organizations.json";
+import { RegionSettings } from "./components/region-settings";
+import {
+  blankBoard,
+  makeBoard,
+  slots,
+  type Board,
+  type Region,
+} from "@/lib/regions";
 import { ThemeSwitch } from "./components/theme-switch";
 import { ProfilePanel, Recommendations } from "./components/matching-panel";
 import {
   matchingStateSchema,
   verificationSchema,
   contactCandidates,
+  contactIdentity,
   recommendationGroups,
   type MatchingState,
   type Recommendation,
@@ -82,6 +91,7 @@ const starters = [
   },
 ];
 type Run = {
+  board?: Board;
   topic: string;
   options: SearchOptions;
   tasks: SearchTask[];
@@ -264,6 +274,22 @@ export default function Atlas() {
       run ? contactCandidates(people, run.topic, matching, run.options) : [],
     [people, run, matching],
   );
+  const region =
+    run && !run.options.country && !run.options.institution
+      ? matching.profile.region
+      : undefined;
+  const board = run?.board || blankBoard;
+  const picks = useMemo(
+    () => (region ? makeBoard(ranked, region, board) : {}),
+    [ranked, region, board],
+  );
+  function updateRegion(g?: Region) {
+    setMatchingReady(true);
+    setMatching((s) => ({ ...s, profile: { ...s.profile, region: g } }));
+  }
+  function saveBoard(b: Board) {
+    setRun((r) => (r ? { ...r, board: b } : r));
+  }
   function feedback(c: Recommendation, kind?: FeedbackKind) {
     if (!run) return;
     setMatching((s) => ({
@@ -274,13 +300,15 @@ export default function Atlas() {
             !(
               (f.kind === "contacted" ||
                 normalize(f.topic) === normalize(run.topic)) &&
-              f.personKey === c.person.key
+              (f.personKey === c.person.key ||
+                f.personKey === c.feedback?.personKey)
             ),
         ),
         ...(kind
           ? [
               {
                 personKey: c.person.key,
+                identity: contactIdentity(c.person),
                 topic: run.topic,
                 kind,
                 terms: c.matched.slice(0, 20),
@@ -404,7 +432,7 @@ export default function Atlas() {
       setLookupBusy(false);
     }
   }
-  async function sweep(existing?: Run) {
+  async function sweep(existing?: Run, target?: string[]) {
     if (busy) return;
     const snapshot: Run = existing
       ? {
@@ -422,6 +450,50 @@ export default function Atlas() {
             ),
           works: [],
         };
+    const geoPlan =
+      !snapshot.options.country &&
+      !snapshot.options.institution &&
+      matching.profile.region;
+    const originalQueries = [
+      ...new Set(
+        snapshot.tasks.filter((t) => !t.countries).map((t) => t.query),
+      ),
+    ];
+    const scopeKey = (codes?: string[]) => [...(codes || [])].sort().join("|");
+    if (
+      geoPlan &&
+      (target || snapshot.tasks.some((t) => t.provider === "openalex"))
+    ) {
+      const scopes = target ? [target] : slots(geoPlan).map((s) => s.countries);
+      for (const codes of scopes) {
+        const scoped = snapshot.tasks.filter(
+          (t) => t.countries && scopeKey(t.countries) === scopeKey(codes),
+        );
+        if (scoped.length && (!target || scoped.some((t) => !t.done))) continue;
+        const q = originalQueries.find(
+          (q) => !scoped.some((t) => t.query === q),
+        );
+        if (q && snapshot.tasks.length < 512)
+          snapshot.tasks.push({
+            provider: "openalex",
+            countries: codes,
+            query: q,
+            page: 1,
+          });
+      }
+    }
+    if (
+      target &&
+      !snapshot.tasks.some(
+        (t) => !t.done && scopeKey(t.countries) === scopeKey(target),
+      )
+    ) {
+      setRun(snapshot);
+      setError(
+        "The available OpenAlex pages and query variants for this area have been checked. Widen the radius, choose another country or start with another topic.",
+      );
+      return;
+    }
     if (!snapshot.tasks.length) {
       setError("Select at least one source compatible with this search.");
       return;
@@ -456,7 +528,17 @@ export default function Atlas() {
     setCacheHits(0);
     const enabledTasks = snapshot.tasks
       .map((t, i) => ({ t, i }))
-      .filter(({ t }) => !t.done);
+      .filter(
+        ({ t }) =>
+          !t.done &&
+          (!target || scopeKey(t.countries) === scopeKey(target)) &&
+          (!t.countries ||
+            target ||
+            (geoPlan &&
+              slots(geoPlan).some(
+                (s) => scopeKey(s.countries) === scopeKey(t.countries),
+              ))),
+      );
     const priority = [
       "openalex",
       "thesesfr",
@@ -467,7 +549,7 @@ export default function Atlas() {
       "arxiv",
     ];
     const starterTasks = enabledTasks
-      .filter(({ t }) => t.query === queries[0])
+      .filter(({ t }) => !t.countries && t.query === queries[0])
       .sort(
         (a, b) =>
           priority.indexOf(a.t.provider) - priority.indexOf(b.t.provider),
@@ -479,11 +561,13 @@ export default function Atlas() {
         round < (existing || shortPass ? 1 : sweeps);
         round++
       ) {
-        const queue = shortPass ? [...starterTasks] : [...enabledTasks];
+        const queue = shortPass
+          ? [...enabledTasks.filter((e) => e.t.countries), ...starterTasks]
+          : [...enabledTasks];
         const worker = async () => {
           while (queue.length && !operation.signal.aborted) {
             const { t, i } = queue.shift()!;
-            if (t.done || failures.has(`${t.provider}:${t.query}`)) continue;
+            if (t.done || failures.has(String(i))) continue;
             setProgress(
               `${providerNames[t.provider]} · query ${i + 1}/${snapshot.tasks.length} · page ${t.page}`,
             );
@@ -491,6 +575,7 @@ export default function Atlas() {
               const body = {
                 op: "search",
                 provider: t.provider,
+                countries: t.countries,
                 query: t.query,
                 page: t.page,
                 cursor: t.cursor,
@@ -519,7 +604,7 @@ export default function Atlas() {
             } catch (e) {
               if (stop.current) break;
               t.error = (e as Error).message;
-              failures.add(`${t.provider}:${t.query}`);
+              failures.add(String(i));
             }
             setRun({
               ...snapshot,
@@ -532,7 +617,7 @@ export default function Atlas() {
         );
         if (stop.current) break;
       }
-      if (autoCheck && !operation.signal.aborted && !existing) {
+      if (autoCheck && !operation.signal.aborted && (!existing || target)) {
         const candidates = contactCandidates(
           peopleFrom(
             snapshot.works,
@@ -547,6 +632,10 @@ export default function Atlas() {
         const pool = candidates
           .filter(
             (c) =>
+              (!target ||
+                c.person.institutions.some((i) =>
+                  target.includes(i.country || ""),
+                )) &&
               c.person.institutions.length &&
               !c.hidden &&
               c.fit !== "Broad" &&
@@ -848,6 +937,17 @@ export default function Atlas() {
         )}
         {view === "discover" && (
           <>
+            {matching.profile.region && (country || institution) && (
+              <p className="small">
+                Choose Anywhere and clear the institution filter to search all
+                ten geographic slots.
+              </p>
+            )}
+            <RegionSettings
+              region={matching.profile.region}
+              onChange={updateRegion}
+              busy={busy}
+            />
             <ProfilePanel
               profile={matching.profile}
               onChange={(profile) => {
@@ -1008,7 +1108,9 @@ export default function Atlas() {
                         onChange={(e) => setSweeps(Number(e.target.value))}
                       >
                         <option value={0}>
-                          Quick shortlist · up to 3 first pages
+                          {matching.profile.region && !country && !institution
+                            ? "Quick shortlist · geographic and general queries"
+                            : "Quick shortlist · up to 3 first pages"}
                         </option>
                         <option value={1}>
                           1 page · all selected queries and sources
@@ -1201,7 +1303,9 @@ export default function Atlas() {
                     [
                       "matches",
                       "Recommended contacts",
-                      recommendationGroups(ranked).length,
+                      region
+                        ? Object.keys(picks).length
+                        : recommendationGroups(ranked).length,
                     ],
                     ["people", "Researchers", people.length],
                     ["papers", "Papers & theses", run.works.length],
@@ -1224,6 +1328,28 @@ export default function Atlas() {
                 </div>
                 {tab === "matches" && (
                   <Recommendations
+                    regional={
+                      region
+                        ? {
+                            region,
+                            board,
+                            picks,
+                            candidates: ranked,
+                            onBoard: saveBoard,
+                            onSearch: (codes, b) =>
+                              void sweep({ ...run, board: b }, codes),
+                            onSwap: (old, code, b) => {
+                              updateRegion({
+                                ...region,
+                                destinations: region.destinations.map((c) =>
+                                  c === old ? code : c,
+                                ),
+                              });
+                              void sweep({ ...run, board: b }, [code]);
+                            },
+                          }
+                        : undefined
+                    }
                     scope={run.options}
                     topic={run.topic}
                     studentProfile={matching.profile}
@@ -1576,7 +1702,12 @@ export default function Atlas() {
                           {run.tasks.map((t, i) => (
                             <tr key={i}>
                               <td>{providerNames[t.provider]}</td>
-                              <td>{t.query}</td>
+                              <td>
+                                {t.query}
+                                {t.countries && (
+                                  <small> · {t.countries.join(", ")}</small>
+                                )}
+                              </td>
                               <td className="num">
                                 {t.done && !t.error ? t.page : t.page - 1}
                               </td>

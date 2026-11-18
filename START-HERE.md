@@ -2,6 +2,8 @@
 
 This folder is ready to use as the root of a GitHub repository for Vercel.
 
+For the ten-slot view, use **Choose locations** on Discover, select your city, radius and five countries, and start a search with **Anywhere** selected. Each card offers individual replacement and outreach actions.
+
 ## Try it locally
 
 From this folder, run:

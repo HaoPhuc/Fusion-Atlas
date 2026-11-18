@@ -1,5 +1,13 @@
 # Delivery validation
 
+## Geographic shortlist · version 1.3
+
+The production-browser workflow on 18 November 2026 used Utrecht, a 150 km radius, and Germany, France, the United States, Switzerland and the United Kingdom as destinations. The topic was **machine learning plasma control**. The app ran scoped OpenAlex searches, retrieved institution coordinates, and retained separate literature results. Some slots stayed open when the returned evidence lacked a qualifying group or location.
+
+The workflow exercised all ten slot positions, an official EPFL group contact, marking the DIFFER group contact as already contacted, keeping the other filled positions in place, and changing the UK slot to Japan. It also checked phone layout, persistent settings, and importing the actual exported session with its coordinates and search progress. An initial test exposed the same contact appearing under abbreviated authorship. The released matcher checks known identifiers and same-institution name variants. Contact history from previous exports with reviewed group identities is also recognized.
+
+All 42 automated tests passed, including geographic allocation, cross-border radius matching, alternatives, incomplete evidence, targeted queries and abbreviated contact names. The Next.js production build passed. The desktop, tablet and phone layout inspection returned zero warnings or failures.
+
 ## Supervisor matching and themes · version 1.2
 
 Checked 18 November 2026 using the local production build. All 36 tests, TypeScript checks and the Next.js production build passed.

@@ -1,4 +1,5 @@
 "use client";
+import { RegionResults } from "./region-results";
 import { useState } from "react";
 import {
   ArrowUpRight,
@@ -182,6 +183,10 @@ const labels: Record<FeedbackKind, string> = {
   dismissed: "Dismiss",
 };
 type Props = {
+  regional?: Omit<
+    React.ComponentProps<typeof RegionResults>,
+    "busy" | "renderEvidence" | "onContacted" | "onVerify"
+  >;
   topic: string;
   scope: { country: string; institution?: { name: string } };
   studentProfile: StudentProfile;
@@ -415,126 +420,145 @@ export function Recommendations(p: Props) {
     .slice(0, 3);
   return (
     <section className="recommendations" aria-label="Contact recommendations">
-      <div className="recommendations-heading">
-        <div>
-          <h2>Who to contact</h2>
-          <p>
-            {groups.length} suggested contact{groups.length === 1 ? "" : "s"}{" "}
-            from {p.candidates.length.toLocaleString()} researcher identities.
+      {p.regional ? (
+        <RegionResults
+          {...p.regional}
+          busy={p.busy}
+          onContacted={(c) => p.onFeedback(c, "contacted")}
+          onVerify={p.onVerify}
+          renderEvidence={(c) => <RecommendationRow {...p} c={c} />}
+        />
+      ) : (
+        <>
+          <div className="recommendations-heading">
+            <div>
+              <h2>Who to contact</h2>
+              <p>
+                {groups.length} suggested contact
+                {groups.length === 1 ? "" : "s"} from{" "}
+                {p.candidates.length.toLocaleString()} researcher identities.
+              </p>
+            </div>
+            <button disabled={p.busy || !groups.length} onClick={p.onVerifyTop}>
+              {groups.length > 1
+                ? "Check top " + Math.min(3, groups.length) + " contacts"
+                : "Check contact"}
+            </button>
+          </div>
+          <p className="small">
+            {p.scope.country || p.scope.institution
+              ? "Contacts must have a recorded affiliation in your selected location. Researchers also includes leads with unknown affiliations when enabled."
+              : "Each result leads with one contact per named group or indexed institution."}
           </p>
-        </div>
-        <button disabled={p.busy || !groups.length} onClick={p.onVerifyTop}>
-          {groups.length > 1
-            ? "Check top " + Math.min(3, groups.length) + " contacts"
-            : "Check contact"}
-        </button>
-      </div>
-      <p className="small">
-        {p.scope.country || p.scope.institution
-          ? "Contacts must have a recorded affiliation in your selected location. Researchers also includes leads with unknown affiliations when enabled."
-          : "Each result leads with one contact per named group or indexed institution."}
-      </p>
-      {!groups.length && (
-        <div className="empty">
-          {p.busy
-            ? "Building the first candidates…"
-            : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
-        </div>
-      )}
-      {groups.map(({ lead, alternatives }) => (
-        <div className="recommendation-group" key={lead.groupKey}>
-          <RecommendationRow {...p} c={lead} />
-          {(!lead.groupSource || alternatives.length > 0) && (
-            <div className="group-context">
-              <p className="small">{lead.groupNote}</p>
-              {!!alternatives.length && (
-                <details>
-                  <summary>
-                    {alternatives.length} other researcher
-                    {alternatives.length === 1 ? "" : "s"} in this institution
-                    grouping
-                  </summary>
-                  {alternatives.slice(0, 5).map((c) => (
-                    <div className="alternative-contact" key={c.person.key}>
-                      <span>
-                        <strong>{c.person.name}</strong>
-                        <small>
-                          {c.fit} fit ·{" "}
-                          {c.person.supervisedWorkIds?.length
-                            ? "Thesis supervision recorded"
-                            : "Role not established"}
-                        </small>
-                      </span>
-                      <button onClick={() => p.onExplore(c)}>
-                        View evidence
-                      </button>
-                      <button disabled={p.busy} onClick={() => p.onVerify(c)}>
-                        Check role
-                      </button>
-                    </div>
-                  ))}
-                  {alternatives.length > 5 && (
-                    <p className="small">
-                      All alternatives remain in Explore researchers.
-                    </p>
-                  )}
-                </details>
-              )}
+          {!groups.length && (
+            <div className="empty">
+              {p.busy
+                ? "Building the first candidates…"
+                : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
             </div>
           )}
-        </div>
-      ))}
-      {recommendationGroups(p.candidates, limit + 1).length > limit && (
-        <button className="load-more" onClick={() => setLimit((n) => n + 8)}>
-          Explore 8 more groups
-        </button>
-      )}
-      {!!routes.length && (
-        <section className="programme-routes">
-          <h3>Undergraduate application routes</h3>
-          <p className="small">
-            Institution-wide programmes · reviewed {reviewedOn}. Check the
-            current application cycle and your eligibility.
-          </p>
-          {routes.map(({ r }) => (
-            <div key={r.url}>
-              <strong>{r.institution}</strong>
-              <p>{r.note}</p>
-              <Link url={r.url}>{r.name}</Link>
-            </div>
-          ))}
-        </section>
-      )}
-      {!!checks.length && (
-        <details className="excluded-leads" open={!groups.length}>
-          <summary>
-            Researchers whose roles still need checking ({checks.length})
-          </summary>
-          <p className="small">
-            These authors have a strong topic match. An official profile may
-            establish who supervises students.
-          </p>
-          {checks.map((c) => (
-            <div className="alternative-contact" key={c.person.key}>
-              <span>
-                <strong>{c.person.name}</strong>
-                <small>{c.groupName}</small>
-              </span>
-              <button disabled={p.busy} onClick={() => p.onVerify(c)}>
-                {p.checking === c.person.key
-                  ? "Checking…"
-                  : "Check official role"}
-              </button>
-              <button onClick={() => p.onExplore(c)}>Read evidence</button>
-              {c.verification && (
-                <small>
-                  {c.verification.status} · {c.verification.pages.length} pages
-                  checked
-                </small>
+          {groups.map(({ lead, alternatives }) => (
+            <div className="recommendation-group" key={lead.groupKey}>
+              <RecommendationRow {...p} c={lead} />
+              {(!lead.groupSource || alternatives.length > 0) && (
+                <div className="group-context">
+                  <p className="small">{lead.groupNote}</p>
+                  {!!alternatives.length && (
+                    <details>
+                      <summary>
+                        {alternatives.length} other researcher
+                        {alternatives.length === 1 ? "" : "s"} in this
+                        institution grouping
+                      </summary>
+                      {alternatives.slice(0, 5).map((c) => (
+                        <div className="alternative-contact" key={c.person.key}>
+                          <span>
+                            <strong>{c.person.name}</strong>
+                            <small>
+                              {c.fit} fit ·{" "}
+                              {c.person.supervisedWorkIds?.length
+                                ? "Thesis supervision recorded"
+                                : "Role not established"}
+                            </small>
+                          </span>
+                          <button onClick={() => p.onExplore(c)}>
+                            View evidence
+                          </button>
+                          <button
+                            disabled={p.busy}
+                            onClick={() => p.onVerify(c)}
+                          >
+                            Check role
+                          </button>
+                        </div>
+                      ))}
+                      {alternatives.length > 5 && (
+                        <p className="small">
+                          All alternatives remain in Explore researchers.
+                        </p>
+                      )}
+                    </details>
+                  )}
+                </div>
               )}
             </div>
           ))}
-        </details>
+          {recommendationGroups(p.candidates, limit + 1).length > limit && (
+            <button
+              className="load-more"
+              onClick={() => setLimit((n) => n + 8)}
+            >
+              Explore 8 more groups
+            </button>
+          )}
+          {!!routes.length && (
+            <section className="programme-routes">
+              <h3>Undergraduate application routes</h3>
+              <p className="small">
+                Institution-wide programmes · reviewed {reviewedOn}. Check the
+                current application cycle and your eligibility.
+              </p>
+              {routes.map(({ r }) => (
+                <div key={r.url}>
+                  <strong>{r.institution}</strong>
+                  <p>{r.note}</p>
+                  <Link url={r.url}>{r.name}</Link>
+                </div>
+              ))}
+            </section>
+          )}
+          {!!checks.length && (
+            <details className="excluded-leads" open={!groups.length}>
+              <summary>
+                Researchers whose roles still need checking ({checks.length})
+              </summary>
+              <p className="small">
+                These authors have a strong topic match. An official profile may
+                establish who supervises students.
+              </p>
+              {checks.map((c) => (
+                <div className="alternative-contact" key={c.person.key}>
+                  <span>
+                    <strong>{c.person.name}</strong>
+                    <small>{c.groupName}</small>
+                  </span>
+                  <button disabled={p.busy} onClick={() => p.onVerify(c)}>
+                    {p.checking === c.person.key
+                      ? "Checking…"
+                      : "Check official role"}
+                  </button>
+                  <button onClick={() => p.onExplore(c)}>Read evidence</button>
+                  {c.verification && (
+                    <small>
+                      {c.verification.status} · {c.verification.pages.length}{" "}
+                      pages checked
+                    </small>
+                  )}
+                </div>
+              ))}
+            </details>
+          )}
+        </>
       )}
       {!!hidden.length && (
         <details className="excluded-leads">
