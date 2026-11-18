@@ -280,8 +280,11 @@ export default function Atlas() {
       : undefined;
   const board = run?.board || blankBoard;
   const picks = useMemo(
-    () => (region ? makeBoard(ranked, region, board) : {}),
-    [ranked, region, board],
+    () =>
+      region
+        ? makeBoard(ranked, region, board, matching.profile.roleOrder)
+        : {},
+    [ranked, region, board, matching.profile.roleOrder],
   );
   function updateRegion(g?: Region) {
     setMatchingReady(true);
@@ -1332,6 +1335,7 @@ export default function Atlas() {
                       region
                         ? {
                             region,
+                            order: matching.profile.roleOrder,
                             board,
                             picks,
                             candidates: ranked,
@@ -1352,6 +1356,13 @@ export default function Atlas() {
                     }
                     scope={run.options}
                     topic={run.topic}
+                    onRoleOrder={(roleOrder) => {
+                      setMatching((s) => ({
+                        ...s,
+                        profile: { ...s.profile, roleOrder },
+                      }));
+                      saveBoard({ ...board, pins: {} });
+                    }}
                     studentProfile={matching.profile}
                     candidates={ranked}
                     busy={busy}
@@ -1365,7 +1376,11 @@ export default function Atlas() {
                     onVerify={(c, url) => void verify([c], url)}
                     onVerifyTop={() =>
                       void verify(
-                        recommendationGroups(ranked)
+                        recommendationGroups(
+                          ranked,
+                          8,
+                          matching.profile.roleOrder,
+                        )
                           .slice(0, 3)
                           .map((g) => g.lead),
                       )

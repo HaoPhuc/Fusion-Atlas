@@ -1,5 +1,11 @@
 # Delivery validation
 
+## Contact roles · version 1.4
+
+All 45 automated tests passed. The production build completed with TypeScript checks. Chromium checks used imported plasma-control searches with an empty literature set so the named contacts came directly from the reviewed institutional sources.
+
+In the Eindhoven regional shortlist, prioritizing doctoral and postdoctoral researchers surfaced Loes Jansen. Switching that slot manually to Matthijs van Berkel preserved every other slot. Prioritizing project supervisors surfaced Tijs Wijkamp, whose source describes daily supervision on a doctoral project. The country-scoped view also surfaced Jansen and kept van Berkel accessible in the same group. The checks covered the source link, saved preference, mobile layout at 390 px, and browser runtime errors.
+
 ## Geographic shortlist · version 1.3
 
 The production-browser workflow on 18 November 2026 used Utrecht, a 150 km radius, and Germany, France, the United States, Switzerland and the United Kingdom as destinations. The topic was **machine learning plasma control**. The app ran scoped OpenAlex searches, retrieved institution coordinates, and retained separate literature results. Some slots stayed open when the returned evidence lacked a qualifying group or location.

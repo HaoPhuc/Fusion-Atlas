@@ -4,6 +4,8 @@ This folder is ready to use as the root of a GitHub repository for Vercel.
 
 For the ten-slot view, use **Choose locations** on Discover, select your city, radius and five countries, and start a search with **Anywhere** selected. Each card offers individual replacement and outreach actions.
 
+In **Recommended contacts**, use **Prioritize contacts** to try student/project supervisors or doctoral and postdoctoral researchers first. Each role links to the evidence. Group leaders remain available for referrals and placement approval.
+
 ## Try it locally
 
 From this folder, run:

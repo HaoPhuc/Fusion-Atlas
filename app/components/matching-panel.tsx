@@ -1,4 +1,6 @@
 "use client";
+import { RoleEvidenceLine } from "./role-evidence";
+import { roleOptions, roleOrders, type RoleOrder } from "@/lib/contact-roles";
 import { RegionResults } from "./region-results";
 import { useState } from "react";
 import {
@@ -183,6 +185,7 @@ const labels: Record<FeedbackKind, string> = {
   dismissed: "Dismiss",
 };
 type Props = {
+  onRoleOrder: (value: RoleOrder) => void;
   regional?: Omit<
     React.ComponentProps<typeof RegionResults>,
     "busy" | "renderEvidence" | "onContacted" | "onVerify"
@@ -215,6 +218,7 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
                 : "Research lead · role needs checking"}
           </span>
           <h3>{c.person.name}</h3>
+          <RoleEvidenceLine c={c} />
           <p>{c.groupName}</p>
         </div>
         <span className="fit-label">{c.fit} research fit</span>
@@ -378,7 +382,11 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
 }
 export function Recommendations(p: Props) {
   const [limit, setLimit] = useState(8);
-  const groups = recommendationGroups(p.candidates, limit);
+  const groups = recommendationGroups(
+    p.candidates,
+    limit,
+    p.studentProfile.roleOrder,
+  );
   const terms = concepts(
     [p.topic, p.studentProfile.interests, p.studentProfile.skills].join(" "),
   );
@@ -420,6 +428,30 @@ export function Recommendations(p: Props) {
     .slice(0, 3);
   return (
     <section className="recommendations" aria-label="Contact recommendations">
+      <div className="role-sort">
+        <label>
+          Prioritize contacts
+          <select
+            value={p.studentProfile.roleOrder}
+            disabled={p.busy}
+            onChange={(e) => p.onRoleOrder(e.target.value as RoleOrder)}
+          >
+            {roleOrders.map((o) => (
+              <option key={o} value={o}>
+                {roleOptions[o]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <small>
+          {p.studentProfile.roleOrder === "mentor"
+            ? "Look for a named project supervisor or a record of thesis supervision. Check the student level in the linked source."
+            : p.studentProfile.roleOrder === "early"
+              ? "Doctoral researchers and postdocs can discuss their work and point you to the person who approves placements."
+              : "Role labels link to their sources. Ask the group who would supervise you day to day and whether they have time this term."}{" "}
+          Other roles remain available.
+        </small>
+      </div>
       {p.regional ? (
         <RegionResults
           {...p.regional}
@@ -474,6 +506,7 @@ export function Recommendations(p: Props) {
                         <div className="alternative-contact" key={c.person.key}>
                           <span>
                             <strong>{c.person.name}</strong>
+                            <RoleEvidenceLine c={c} />
                             <small>
                               {c.fit} fit ·{" "}
                               {c.person.supervisedWorkIds?.length
@@ -503,7 +536,11 @@ export function Recommendations(p: Props) {
               )}
             </div>
           ))}
-          {recommendationGroups(p.candidates, limit + 1).length > limit && (
+          {recommendationGroups(
+            p.candidates,
+            limit + 1,
+            p.studentProfile.roleOrder,
+          ).length > limit && (
             <button
               className="load-more"
               onClick={() => setLimit((n) => n + 8)}

@@ -8,6 +8,12 @@ For example, search **spectroscopy** in **Australia**. ANU’s MAGPIE project na
 
 The interface starts in dark mode. The header offers Light and System and remembers your choice in this browser.
 
+## Choose who to approach
+
+**Prioritize contacts** appears above the results in both shortlist layouts. Choose student/project supervisors, doctoral and postdoctoral researchers, research staff and group contacts, or group leaders and faculty. This preference changes which person represents a group and is saved with your profile. The geographic quotas still apply. Expand **Other contacts in this group** on a geographic card to compare named teammates or switch its representative.
+
+A dated link shows the evidence behind each role. An explicitly named daily supervisor on a doctoral project is a lead for asking about mentoring arrangements. Ask separately about undergraduate eligibility, supervision time and who signs off. Career stage, citations and publication volume do not establish someone’s workload. A record with no attributable role is labelled **Role unconfirmed**.
+
 ## Geographic shortlist
 
 Choose **Discover → Choose locations**, select your home city, a radius and five other countries, then apply the layout and start a worldwide search. Three slots cover the radius across national borders. Two cover your home country beyond the radius, with different cities preferred. Each destination receives one slot. A single-country or institution search continues to use the standard results.
@@ -85,7 +91,7 @@ The other six public metadata integrations need no additional API keys. No paid 
 
 ## How contacts are selected
 
-- The contact view combines eleven reviewed group or project contacts across six institutions with worldwide discovery through papers, theses and official staff pages. A named group or project takes precedence where available. Other candidates are grouped by a recorded personal affiliation. A country or institution constraint requires a matching personal affiliation in Recommended contacts. The broader Researchers tab can retain unknown-location leads. A thesis without an established employer retains its own lead.
+- The contact view combines thirteen reviewed group or project contacts across six institutions with worldwide discovery through papers, theses and official staff pages. A named group or project takes precedence where available. Other candidates are grouped by a recorded personal affiliation. A country or institution constraint requires a matching personal affiliation in Recommended contacts. The broader Researchers tab can retain unknown-location leads. A thesis without an established employer retains its own lead.
 - Topic and method matches, skills, preferred work style, location, explicit thesis supervision and recent role evidence determine priority. Broad coauthorship alone cannot create a suggested supervisor. Students can inspect up to three additional authors with strong research matches and check their roles.
 - Dated project instructions and personal contacts link to institutional sources. The app also lists relevant central application routes at MIT, PPPL and UKAEA. A published role or earlier thesis cannot confirm a vacancy, funding or visa eligibility. Dates, degree requirements and funding remain questions to resolve with the host.
 - **Good match** and **Too theoretical** adjust ranking. **Wrong methods / topic**, **Not eligible** and **Dismiss** hide that contact for the topic. **Already contacted** applies across topics for the same identity. Use **Hidden by your feedback** to restore leads.

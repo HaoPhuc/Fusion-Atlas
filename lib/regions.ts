@@ -1,3 +1,4 @@
+import { rolePriority, type RoleOrder } from "./contact-roles";
 import { z } from "zod";
 import type { Recommendation } from "./matching";
 import type { Institution } from "./types";
@@ -104,6 +105,7 @@ export function makeBoard(
   candidates: Recommendation[],
   g: Region,
   board: Board,
+  order: RoleOrder = "all",
 ) {
   const pool: Pick[] = [];
   for (const c of candidates) {
@@ -197,6 +199,7 @@ export function makeBoard(
       quality(p) + (s.type === "near" ? 12 * (1 - p.km! / g.radius) : 0);
     eligible.sort(
       (a, b) =>
+        rolePriority(b.c, order) - rolePriority(a.c, order) ||
         Number(a.lead) - Number(b.lead) ||
         (s.type === "home"
           ? Number(cities.has(a.city || "")) - Number(cities.has(b.city || ""))

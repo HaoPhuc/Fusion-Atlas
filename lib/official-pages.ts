@@ -269,7 +269,7 @@ async function readPage(
   return page;
 }
 const roleRx =
-  /\b(professor|principal (?:research )?(?:scientist|investigator)|(?:research |group |project |team )leader|head of|research scientist|staff scientist|senior scientist|research fellow|chercheur|directeur de recherche)\b/i;
+  /\b((?:(?:assistant|associate|full) )?professor|(?:ph\.?d\.?|doctoral) (?:candidate|student|researcher)|post[- ]?doc(?:toral)?(?: (?:researcher|scientist|fellow|associate))?|(?:daily|day-to-day|project|student|undergraduate|thesis) (?:supervisor|mentor)|research engineer|principal (?:research )?(?:scientist|investigator)|(?:research |group |project |team )leader|head of|research scientist|staff scientist|senior scientist|research fellow|chercheur|directeur de recherche)\b/i;
 const pastRx =
   /\b(former|retired|emeritus|alumni|alumnus|in memoriam|past members)\b/i;
 export function extractPageEvidence(
@@ -382,7 +382,7 @@ export function extractPageEvidence(
           /^(?:dr|prof|prof dr)?$/.test(before)) ||
         (roleRx.test(before) &&
           !after &&
-          /(?:leader|professor|investigator|scientist|fellow|head)(?: dr)?$/.test(
+          /(?:leader|professor|investigator|scientist|fellow|head|researcher|candidate|associate|student|postdoc|mentor|supervisor|engineer)(?: dr)?$/.test(
             before,
           ))
       )

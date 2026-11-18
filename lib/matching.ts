@@ -1,4 +1,11 @@
 import { regionSchema } from "./regions";
+import {
+  roleOrders,
+  roleEvidence,
+  rolePriority,
+  type RoleOrder,
+  type RoleEvidence,
+} from "./contact-roles";
 import { z } from "zod";
 import { normalize, safeUrl } from "./research";
 import type { Person, Work } from "./types";
@@ -12,6 +19,7 @@ import {
 
 export const studentProfileSchema = z.object({
   region: regionSchema.optional(),
+  roleOrder: z.enum(roleOrders).default("all"),
   degree: z.string().max(120).default("Undergraduate"),
   year: z.string().max(40).default(""),
   skills: z.string().max(600).default(""),
@@ -268,6 +276,7 @@ export type Recommendation = {
   groupSource?: string;
   routeReviewed?: string;
   roleLabel?: string;
+  roles?: RoleEvidence[];
 };
 export function rankCandidates(
   people: Person[],
@@ -459,12 +468,40 @@ export function rankCandidates(
                 .map((s) => s.w),
             ].slice(0, 3)
           : scored.slice(0, 3).map((s) => s.w);
+      const roles: RoleEvidence[] =
+        fresh && v
+          ? v.evidence
+              .filter((e) => e.kind === "role")
+              .flatMap(
+                (e) =>
+                  roleEvidence(
+                    e.text,
+                    p.name,
+                    e.url,
+                    v.checkedAt.slice(0, 10),
+                  ) || [],
+              )
+          : [];
+      if (thesis) {
+        const record = thesis.supervisors?.find(
+          (s) => normalize(s.name) === normalize(p.name),
+        );
+        const url = safeUrl(record?.evidenceUrl || thesis.url);
+        if (url)
+          roles.push({
+            kind: "mentor",
+            label: "Recorded thesis supervisor",
+            url,
+            date: thesis.year ? String(thesis.year) : undefined,
+          });
+      }
       const primary =
         p.institutions.find((i) =>
           state.profile.countries.includes(i.country || ""),
         ) || p.institutions[0];
       return {
         person: p,
+        roles,
         rank,
         fit,
         reasons: reasons.length
@@ -505,7 +542,11 @@ export function rankCandidates(
       (a, b) => b.rank - a.rank || a.person.name.localeCompare(b.person.name),
     );
 }
-export function recommendationGroups(candidates: Recommendation[], limit = 8) {
+export function recommendationGroups(
+  candidates: Recommendation[],
+  limit = 8,
+  order: RoleOrder = "all",
+) {
   const groups = new Map<
     string,
     { lead: Recommendation; alternatives: Recommendation[] }
@@ -513,7 +554,12 @@ export function recommendationGroups(candidates: Recommendation[], limit = 8) {
   const priority = { contact: 0, investigate: 1, explore: 2 };
   const sorted = candidates
     .filter((c) => !c.hidden && c.fit !== "Broad" && c.lane !== "explore")
-    .sort((a, b) => priority[a.lane] - priority[b.lane] || b.rank - a.rank);
+    .sort(
+      (a, b) =>
+        rolePriority(b, order) - rolePriority(a, order) ||
+        priority[a.lane] - priority[b.lane] ||
+        b.rank - a.rank,
+    );
   for (const c of sorted) {
     const found = groups.get(c.groupKey);
     if (found) found.alternatives.push(c);
@@ -639,6 +685,12 @@ export function contactCandidates(
       groupSource: l.source,
       routeReviewed: reviewedOn,
       roleLabel: l.role || "Listed group leader",
+      roles: [
+        ...[
+          roleEvidence(l.role || "group leader", l.name, l.source, reviewedOn),
+        ].filter((r): r is RoleEvidence => !!r),
+        ...(entry.roles || []),
+      ],
       rank:
         Math.max(
           entry.rank,
@@ -659,7 +711,7 @@ export function contactCandidates(
           ? "Strong"
           : "Related",
       reasons,
-      lane: fresh ? "contact" : "investigate",
+      lane: fresh && l.role !== "PhD candidate" ? "contact" : "investigate",
       action: fresh
         ? l.instruction
         : "Recheck the dated group listing and its contact instructions.",

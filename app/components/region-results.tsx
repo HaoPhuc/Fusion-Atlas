@@ -13,8 +13,11 @@ import {
   type Recommendation,
 } from "@/lib/matching";
 import { normalize, safeUrl } from "@/lib/research";
+import { RoleEvidenceLine } from "./role-evidence";
+import type { RoleOrder } from "@/lib/contact-roles";
 import { countries } from "@/lib/countries";
 type Props = {
+  order: RoleOrder;
   candidates: Recommendation[];
   region: Region;
   board: Board;
@@ -42,6 +45,15 @@ export function RegionResults(p: Props) {
   }
   function row(s: (typeof seats)[number]) {
     const pick = picks[s.id];
+    const teammates = pick?.c.groupSource
+      ? p.candidates.filter(
+          (c) =>
+            c.groupKey === pick.c.groupKey &&
+            c.person.key !== pick.key &&
+            !c.hidden &&
+            c.fit !== "Broad",
+        )
+      : [];
     function replace(kind: "contacted" | "group" | "institution") {
       if (!pick) return;
       const b = pinned(s.id);
@@ -62,7 +74,8 @@ export function RegionResults(p: Props) {
                 !sameContact(c.person, contactIdentity(pick.c.person)),
             )
           : p.candidates;
-      if (!makeBoard(remaining, g, b)[s.id]) p.onSearch(s.countries, b);
+      if (!makeBoard(remaining, g, b, p.order)[s.id])
+        p.onSearch(s.countries, b);
       else p.onBoard(b);
     }
     return (
@@ -108,6 +121,7 @@ export function RegionResults(p: Props) {
                 : ""}
             </small>
             <h4>{pick.lead ? pick.institution : pick.c.person.name}</h4>
+            <RoleEvidenceLine c={pick.c} />
             <p>
               {pick.lead
                 ? "A researcher at this institution has a strong topic match."
@@ -151,6 +165,29 @@ export function RegionResults(p: Props) {
                 Skip institution
               </button>
             </div>
+            {!!teammates.length && (
+              <details>
+                <summary>
+                  Other contacts in this group ({teammates.length})
+                </summary>
+                {teammates.map((c) => (
+                  <div key={c.person.key} className="alternative-contact">
+                    <strong>{c.person.name}</strong>
+                    <RoleEvidenceLine c={c} />
+                    <button
+                      disabled={p.busy}
+                      onClick={() => {
+                        const b = pinned();
+                        b.pins[s.id] = c.person.key;
+                        p.onBoard(b);
+                      }}
+                    >
+                      Show in this slot
+                    </button>
+                  </div>
+                ))}
+              </details>
+            )}
             <details>
               <summary>Evidence and outreach options</summary>
               {p.renderEvidence(pick.c)}

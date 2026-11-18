@@ -137,6 +137,35 @@ export const listings: Listing[] = [
       "Open the leader’s profile from the group page and enquire about undergraduate supervision.",
   },
 ];
+// The project descriptions distinguish scientific questions from formal internship applications.
+listings.push(
+  {
+    name: "Loes Jansen",
+    role: "PhD candidate",
+    group: "Energy Systems and Control",
+    institution: "Dutch Institute for Fundamental Energy Research",
+    country: "NL",
+    topics:
+      "plasma control engineering fuel pellet injection system identification",
+    source: "https://www.differ.nl/news/women-in-science-loes-jansen",
+    route: "https://www.differ.nl/research/energy-systems-and-control/people",
+    instruction:
+      "Use the team directory to ask about pellet-control work and who could supervise an undergraduate. The institute directs formal project enquiries to its group leaders.",
+  },
+  {
+    name: "Tijs Wijkamp",
+    role: "daily supervisor on a doctoral project",
+    group: "Plasma Edge Physics and Diagnostics",
+    institution: "Dutch Institute for Fundamental Energy Research",
+    country: "NL",
+    topics:
+      "tokamak plasma exhaust spectroscopy diagnostics multispectral imaging experimental control",
+    source: "https://www.differ.nl/vacancies/1299897",
+    route: internships,
+    instruction:
+      "DIFFER named Wijkamp for daily supervision on a doctoral diagnostics project. Use the internship route to ask whether a similar undergraduate project has a day-to-day mentor.",
+  },
+);
 export const reviewedOn = "2026-11-18";
 export const programmes = [
   {
