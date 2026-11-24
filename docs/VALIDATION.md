@@ -1,5 +1,13 @@
 # Delivery validation
 
+## New since last search
+
+All 85 automated tests passed, including the 71 existing tests and 14 new history tests. Fixtures cover classification by key, alias and name with a shared affiliation, action precedence, the fixed baseline, group keys, bounded history, import merges, older sessions and preservation of unreadable storage. They also check that a researcher with more than 20 aliases retains the link to an earlier entry. Type checking, the production build and Prettier checks on the changed files passed. The Windows test runner used a temporary preload for the operating-system username lookup.
+
+A local Chromium check against the production build used fixture provider responses. A progressive page left storage untouched. Opening a dossier wrote just that identity, and pausing recorded the other results. The person stayed **New** through a continuation and became **Seen** on a repeat search. The check also covered the first-run header, repeat count, first-seen tooltip, persisted **Hide seen** preference, regional pin visibility, the entry count in the clear confirmation, cancelling and confirming the clear, and restoration from a session export. No browser runtime errors were observed in that workflow.
+
+A fresh browser context restored the exported history and filter preference. Opening an older version-one session in that context preserved the local history.
+
 ## Supervision levels
 
 The suite passes all 71 tests (60 existing and 11 new). Offline fixtures check the six provider mappings, including DataCite’s “Master’s dissertation”, DOI and identifier-bridge merges, authored versus supervised works, and the inclusive five-year boundary. Ranking tests check the +6 and +10 bonuses, the higher-level question, the unchanged score for missing evidence, reviewed group contacts and the topic requirement for the contact lane. Backup and CSV tests cover unspecified levels on old records, the bachelor profile default, source links under earlier identity keys and formula escaping.

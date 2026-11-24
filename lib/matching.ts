@@ -21,6 +21,7 @@ import {
 } from "./contact-routes";
 
 export const studentProfileSchema = z.object({
+  hideSeen: z.boolean().default(false),
   region: regionSchema.optional(),
   roleOrder: z.enum(roleOrders).default("all"),
   degree: z.string().max(120).default("Undergraduate"),
@@ -127,6 +128,12 @@ const listedIdentities = new Map(
     return [p.key, contactIdentity(p)];
   }),
 );
+export function feedbackMatchesPerson(p: Person, feedback: Feedback) {
+  if (personHasKey(p, feedback.personKey)) return true;
+  const identity =
+    feedback.identity || listedIdentities.get(feedback.personKey);
+  return !!identity && sameContact(p, identity);
+}
 export const matchingStateSchema = z.object({
   identityDecisions: z
     .array(
@@ -368,11 +375,8 @@ export function rankCandidates(
       const role = fresh && v?.evidence.find((e) => e.kind === "role");
       const route = fresh && v?.evidence.find((e) => e.kind === "contact");
       const own =
-        contacted.find((f) => {
-          if (personHasKey(p, f.personKey)) return true;
-          const identity = f.identity || listedIdentities.get(f.personKey);
-          return !!identity && sameContact(p, identity);
-        }) || feedback.findLast((f) => personHasKey(p, f.personKey));
+        contacted.find((f) => feedbackMatchesPerson(p, f)) ||
+        feedback.findLast((f) => personHasKey(p, f.personKey));
       const supervised = (p.supervisedWorkIds?.length || 0) > 0;
       const preferredLocation =
         !state.profile.countries.length ||

@@ -204,10 +204,11 @@ const labels: Record<FeedbackKind, string> = {
   dismissed: "Dismiss",
 };
 type Props = {
+  renderBadge: (c: Recommendation) => React.ReactNode;
   onRoleOrder: (value: RoleOrder) => void;
   regional?: Omit<
     React.ComponentProps<typeof RegionResults>,
-    "busy" | "renderEvidence" | "onContacted" | "onVerify"
+    "busy" | "renderEvidence" | "renderBadge" | "onContacted" | "onVerify"
   >;
   topic: string;
   scope: { country: string; institution?: { name: string } };
@@ -237,7 +238,9 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
                 ? "Supervision or role evidence"
                 : "Research lead · role needs checking"}
           </span>
-          <h3>{c.person.name}</h3>
+          <h3>
+            {c.person.name} {p.renderBadge(c)}
+          </h3>
           {!!c.person.possibleDuplicates?.length && (
             <small>Possible duplicate</small>
           )}
@@ -475,6 +478,7 @@ export function Recommendations(p: Props) {
       {p.regional ? (
         <RegionResults
           {...p.regional}
+          renderBadge={p.renderBadge}
           busy={p.busy}
           onContacted={(c) => p.onFeedback(c, "contacted")}
           onVerify={p.onVerify}
@@ -506,7 +510,9 @@ export function Recommendations(p: Props) {
             <div className="empty">
               {p.busy
                 ? "Building the first candidates…"
-                : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
+                : p.studentProfile.hideSeen
+                  ? "No suggested contacts match the current filters. Turn off Hide seen to include earlier results."
+                  : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
             </div>
           )}
           {groups.map(({ lead, alternatives }) => (
@@ -525,7 +531,9 @@ export function Recommendations(p: Props) {
                       {alternatives.slice(0, 5).map((c) => (
                         <div className="alternative-contact" key={c.person.key}>
                           <span>
-                            <strong>{c.person.name}</strong>
+                            <strong>
+                              {c.person.name} {p.renderBadge(c)}
+                            </strong>
                             {!!c.person.possibleDuplicates?.length && (
                               <small>Possible duplicate</small>
                             )}
@@ -599,7 +607,9 @@ export function Recommendations(p: Props) {
               {checks.map((c) => (
                 <div className="alternative-contact" key={c.person.key}>
                   <span>
-                    <strong>{c.person.name}</strong>
+                    <strong>
+                      {c.person.name} {p.renderBadge(c)}
+                    </strong>
                     {!!c.person.possibleDuplicates?.length && (
                       <small>Possible duplicate</small>
                     )}
@@ -629,7 +639,7 @@ export function Recommendations(p: Props) {
           {hidden.map((c) => (
             <div className="alternative-contact" key={c.person.key}>
               <span>
-                {c.person.name} · {labels[c.feedback!.kind]}
+                {c.person.name} · {labels[c.feedback!.kind]} {p.renderBadge(c)}
               </span>
               <button onClick={() => p.onFeedback(c, undefined)}>
                 Restore

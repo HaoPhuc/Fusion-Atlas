@@ -680,6 +680,18 @@ code {
 .person-info strong {
   display: block;
 }
+.seen-badge {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 1px 5px;
+  margin-inline-end: 3px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
 .person-info > span {
   display: block;
   color: var(--muted);

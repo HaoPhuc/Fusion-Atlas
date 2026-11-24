@@ -30,6 +30,14 @@ import {
 } from "@/lib/regions";
 import { ThemeSwitch } from "./components/theme-switch";
 import { ProfilePanel, Recommendations } from "./components/matching-panel";
+import { SeenBadge } from "./components/seen-badge";
+import { useSeenHistory } from "./components/use-seen-history";
+import {
+  classifySeen,
+  emptyLedger,
+  indexBaseline,
+  seenResults,
+} from "@/lib/seen";
 import { SupervisionEvidence } from "./components/supervision-evidence";
 import { atOrBelow, supervisionLevels, verificationFor } from "@/lib/levels";
 import {
@@ -166,6 +174,10 @@ export default function Atlas() {
   const [limit, setLimit] = useState(40);
   const [selectedSnapshot, setSelected] = useState<Person>();
   const [saved, setSaved] = useState<Saved[]>([]);
+  const history = useSeenHistory();
+  const { remember } = history;
+  const [baseline, setBaseline] = useState(emptyLedger);
+  const completedSweep = useRef<Run>(undefined);
   const [storageReady, setStorageReady] = useState(false);
   const [config, setConfig] = useState<{
     openalexKey: boolean;
@@ -266,10 +278,48 @@ export default function Atlas() {
         : [],
     [run, includeUnknown, matching.identityDecisions],
   );
+  const ranked = useMemo(
+    () =>
+      run ? contactCandidates(people, run.topic, matching, run.options) : [],
+    [people, run, matching],
+  );
+  const results = useMemo(() => seenResults(people, ranked), [people, ranked]);
+  const prior = useMemo(() => indexBaseline(baseline), [baseline]);
+  const statuses = useMemo(
+    () =>
+      new Map(
+        Array.from(results, ([key, result]) => [
+          key,
+          classifySeen(result.person, prior, matching, saved),
+        ]),
+      ),
+    [results, prior, matching, saved],
+  );
+  const board = run?.board || blankBoard;
+  const hiddenKeys = useMemo(() => {
+    const hidden = new Set<string>();
+    if (matching.profile.hideSeen) {
+      const pins = Object.values(board.pins);
+      for (const [key, { person }] of results) {
+        if (
+          statuses.get(key)?.kind !== "new" &&
+          !pins.some((pin) => personHasKey(person, pin))
+        )
+          hidden.add(key);
+      }
+    }
+    return hidden;
+  }, [results, statuses, board.pins, matching.profile.hideSeen]);
+  const visibleRanked = useMemo(
+    () =>
+      ranked.filter((c) => !hiddenKeys.has(c.literatureKey || c.person.key)),
+    [ranked, hiddenKeys],
+  );
   const visiblePeople = useMemo(
     () =>
       people.filter(
         (p) =>
+          !hiddenKeys.has(p.key) &&
           (!supervisorsOnly || p.supervisedWorkIds?.length) &&
           (!levelOnly ||
             atOrBelow(
@@ -280,16 +330,24 @@ export default function Atlas() {
       ),
     [
       people,
+      hiddenKeys,
       supervisorsOnly,
       levelOnly,
       matching.verifications,
       matching.profile.studentLevel,
     ],
   );
-  const ranked = useMemo(
-    () =>
-      run ? contactCandidates(people, run.topic, matching, run.options) : [],
-    [people, run, matching],
+  useEffect(() => {
+    if (run && completedSweep.current === run) {
+      completedSweep.current = undefined;
+      remember(results.values(), run.topic, true);
+    }
+  }, [run, results, remember]);
+  const recommendationBadge = (c: Recommendation) => (
+    <SeenBadge
+      status={statuses.get(c.literatureKey || c.person.key)!}
+      newGroup={prior.isNewGroup(c.groupKey)}
+    />
   );
   const listing =
     selectedSnapshot?.officialRoleSource &&
@@ -305,13 +363,12 @@ export default function Atlas() {
     run && !run.options.country && !run.options.institution
       ? matching.profile.region
       : undefined;
-  const board = run?.board || blankBoard;
   const picks = useMemo(
     () =>
       region
-        ? makeBoard(ranked, region, board, matching.profile.roleOrder)
+        ? makeBoard(visibleRanked, region, board, matching.profile.roleOrder)
         : {},
-    [ranked, region, board, matching.profile.roleOrder],
+    [visibleRanked, region, board, matching.profile.roleOrder],
   );
   function updateRegion(g?: Region) {
     setMatchingReady(true);
@@ -580,6 +637,7 @@ export default function Atlas() {
     setGraphNext(undefined);
     setLimit(40);
     if (!existing) {
+      setBaseline(history.snapshot());
       setSupervisorsOnly(false);
       setLevelOnly(false);
     }
@@ -716,7 +774,12 @@ export default function Atlas() {
         await checkContacts(top, operation.signal);
       }
     } finally {
-      setRun({ ...snapshot, tasks: snapshot.tasks.map((t) => ({ ...t })) });
+      const finished = {
+        ...snapshot,
+        tasks: snapshot.tasks.map((t) => ({ ...t })),
+      };
+      completedSweep.current = finished;
+      setRun(finished);
       setBusy(false);
       setProgress(
         stop.current
@@ -823,6 +886,8 @@ export default function Atlas() {
         return;
       }
       const d = sessionSchema.parse(raw);
+      if (d.seen) history.add(d.seen);
+      setBaseline(history.snapshot());
       setStorageReady(true);
       setRun(d);
       if (d.matching) {
@@ -863,6 +928,8 @@ export default function Atlas() {
     }
   }
   const selectPerson = (p: Person) => {
+    if (run)
+      remember([results.get(p.key) || { person: p, groupKeys: [] }], run.topic);
     setSelected(p);
     setProfile(undefined);
     setGraphNext(undefined);
@@ -970,6 +1037,7 @@ export default function Atlas() {
                         warnings: messages,
                         shortlist: saved,
                         matching,
+                        seen: history.snapshot(),
                       },
                       null,
                       2,
@@ -993,6 +1061,11 @@ export default function Atlas() {
             />
           </div>
         </header>
+        {history.notice && (
+          <div className="notice error" role="status">
+            {history.notice}
+          </div>
+        )}
         {error && (
           <div className="notice error" role="alert">
             {error}
@@ -1342,6 +1415,20 @@ export default function Atlas() {
                         : ""}
                       {cacheHits > 0 && ` · ${cacheHits} cached page(s)`}
                     </small>
+                    {baseline.entries.length > 0 && (
+                      <small>
+                        {results.size} results ·{" "}
+                        {
+                          Array.from(statuses.values()).filter(
+                            (s) => s.kind === "new",
+                          ).length
+                        }{" "}
+                        new since{" "}
+                        {baseline.lastRunAt
+                          ? new Date(baseline.lastRunAt).toLocaleDateString()
+                          : "previous searches"}
+                      </small>
+                    )}
                   </div>
                   <div>
                     {busy ? (
@@ -1371,7 +1458,7 @@ export default function Atlas() {
                       "Recommended contacts",
                       region
                         ? Object.keys(picks).length
-                        : recommendationGroups(ranked).length,
+                        : recommendationGroups(visibleRanked).length,
                     ],
                     ["people", "Researchers", people.length],
                     ["papers", "Papers & theses", run.works.length],
@@ -1392,8 +1479,27 @@ export default function Atlas() {
                     </button>
                   ))}
                 </div>
+                {(tab === "matches" || tab === "people") && (
+                  <label className="check-label">
+                    <input
+                      type="checkbox"
+                      checked={matching.profile.hideSeen}
+                      onChange={(e) => {
+                        const hideSeen = e.target.checked;
+                        setMatching((s) => ({
+                          ...s,
+                          profile: { ...s.profile, hideSeen },
+                        }));
+                        setSelected(undefined);
+                        setLimit(40);
+                      }}
+                    />
+                    Hide seen
+                  </label>
+                )}
                 {tab === "matches" && (
                   <Recommendations
+                    renderBadge={recommendationBadge}
                     regional={
                       region
                         ? {
@@ -1401,7 +1507,7 @@ export default function Atlas() {
                             order: matching.profile.roleOrder,
                             board,
                             picks,
-                            candidates: ranked,
+                            candidates: visibleRanked,
                             onBoard: saveBoard,
                             onSearch: (codes, b) =>
                               void sweep({ ...run, board: b }, codes),
@@ -1427,7 +1533,7 @@ export default function Atlas() {
                       saveBoard({ ...board, pins: {} });
                     }}
                     studentProfile={matching.profile}
-                    candidates={ranked}
+                    candidates={visibleRanked}
                     busy={busy}
                     checking={checking}
                     savedKeys={saved.flatMap((s) => [
@@ -1443,7 +1549,7 @@ export default function Atlas() {
                     onVerifyTop={() =>
                       void verify(
                         recommendationGroups(
-                          ranked,
+                          visibleRanked,
                           8,
                           matching.profile.roleOrder,
                         )
@@ -1527,7 +1633,10 @@ export default function Atlas() {
                                 .join("")}
                             </div>
                             <div className="person-info">
-                              <strong>{p.name}</strong>
+                              <strong>
+                                {p.name}{" "}
+                                <SeenBadge status={statuses.get(p.key)!} />
+                              </strong>
                               <span>
                                 {p.institutions
                                   .map((i) => i.name)
@@ -1560,11 +1669,13 @@ export default function Atlas() {
                           <div className="empty">
                             {busy
                               ? "Searching scholarly sources…"
-                              : levelOnly
-                                ? "No matching level evidence in these results. Turn off the level filter to see other researchers."
-                                : supervisorsOnly
-                                  ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
-                                  : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
+                              : matching.profile.hideSeen && hiddenKeys.size
+                                ? "No researchers match the current filters. Turn off Hide seen to include earlier results."
+                                : levelOnly
+                                  ? "No matching level evidence in these results. Turn off the level filter to see other researchers."
+                                  : supervisorsOnly
+                                    ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
+                                    : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
                           </div>
                         )}
                         {visiblePeople.length > limit && (
@@ -2090,6 +2201,27 @@ export default function Atlas() {
         )}
         {view === "settings" && (
           <section className="settings">
+            <div className="settings-row">
+              <div>
+                <h2>Seen history</h2>
+                <p>
+                  {history.ledger.entries.length} researcher entries in this
+                  browser. Clearing history keeps your shortlist, feedback and
+                  official-page checks.
+                </p>
+              </div>
+              <button
+                disabled={
+                  busy ||
+                  (!history.ledger.entries.length && !history.ledger.lastRunAt)
+                }
+                onClick={() => {
+                  if (history.clear()) setBaseline(emptyLedger);
+                }}
+              >
+                Clear seen history
+              </button>
+            </div>
             <div className="settings-row">
               <div>
                 <h2>OpenAlex</h2>

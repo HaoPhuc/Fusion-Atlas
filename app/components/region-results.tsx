@@ -19,6 +19,7 @@ import { SupervisionEvidence } from "./supervision-evidence";
 import type { RoleOrder } from "@/lib/contact-roles";
 import { countries } from "@/lib/countries";
 type Props = {
+  renderBadge: (c: Recommendation) => React.ReactNode;
   order: RoleOrder;
   candidates: Recommendation[];
   region: Region;
@@ -122,7 +123,10 @@ export function RegionResults(p: Props) {
                 ? " · ≈" + Math.round(pick.km).toLocaleString() + " km"
                 : ""}
             </small>
-            <h4>{pick.lead ? pick.institution : pick.c.person.name}</h4>
+            <h4>
+              {pick.lead ? pick.institution : pick.c.person.name}{" "}
+              {p.renderBadge(pick.c)}
+            </h4>
             {!!pick.c.person.possibleDuplicates?.length && (
               <small>Possible duplicate</small>
             )}
@@ -183,7 +187,9 @@ export function RegionResults(p: Props) {
                 </summary>
                 {teammates.map((c) => (
                   <div key={c.person.key} className="alternative-contact">
-                    <strong>{c.person.name}</strong>
+                    <strong>
+                      {c.person.name} {p.renderBadge(c)}
+                    </strong>
                     {!!c.person.possibleDuplicates?.length && (
                       <small>Possible duplicate</small>
                     )}

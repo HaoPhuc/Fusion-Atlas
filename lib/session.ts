@@ -2,6 +2,7 @@ import { boardSchema, countryCode } from "./regions";
 import { z } from "zod";
 import { PROVIDERS, SUPERVISION_LEVELS } from "./types";
 import { matchingStateSchema } from "./matching";
+import { seenLedgerSchema } from "./seen";
 const str = z.string().max(30000);
 // Some older exports contain provider nulls for absent metadata.
 const optionalString = str.nullish().transform((v) => v ?? undefined);
@@ -108,6 +109,7 @@ export const shortlistBackupSchema = z.object({
   shortlist: shortlistSchema,
 });
 export const sessionSchema = z.object({
+  seen: seenLedgerSchema.optional(),
   version: z.literal(1),
   topic: z.string().max(250),
   options: z
