@@ -44,12 +44,21 @@ export type Supervisor = Author & {
   evidenceUrl: string;
 };
 export type SourceRecord = { name: string; url: string };
+export const SUPERVISION_LEVELS = [
+  "bachelor",
+  "master",
+  "doctoral",
+  "habilitation",
+  "unknown",
+] as const;
+export type SupervisionLevel = (typeof SUPERVISION_LEVELS)[number];
 export type Work = {
   id: string;
   doi?: string;
   title: string;
   year: number;
   type: string;
+  level?: SupervisionLevel;
   abstract: string;
   url: string;
   pdf?: string;

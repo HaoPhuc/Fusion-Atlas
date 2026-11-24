@@ -1,6 +1,7 @@
 "use client";
 import { personHasKey } from "@/lib/identity";
 import { RoleEvidenceLine } from "./role-evidence";
+import { SupervisionEvidence } from "./supervision-evidence";
 import { roleOptions, roleOrders, type RoleOrder } from "@/lib/contact-roles";
 import { RegionResults } from "./region-results";
 import { useState } from "react";
@@ -75,6 +76,22 @@ export function ProfilePanel({
               onChange={(e) => update("degree", e.target.value)}
               placeholder="Undergraduate physics"
             />
+          </label>
+          <label>
+            Student level
+            <select
+              value={profile.studentLevel}
+              onChange={(e) =>
+                update(
+                  "studentLevel",
+                  e.target.value as StudentProfile["studentLevel"],
+                )
+              }
+            >
+              <option value="bachelor">Bachelor (BSc)</option>
+              <option value="master">Master (MSc)</option>
+              <option value="doctoral">Doctoral (PhD)</option>
+            </select>
           </label>
           <label>
             Year of study
@@ -168,9 +185,10 @@ export function ProfilePanel({
             </select>
           </label>
           <p className="small">
-            Skills, interests and work style affect ranking. Your degree, dates
-            and funding needs help you check programme eligibility. Your profile
-            stays in this browser and your session backups.
+            Student level, skills, interests and work style affect ranking. Your
+            degree, dates and funding needs help you check programme
+            eligibility. Your profile stays in this browser and your session
+            backups.
           </p>
         </div>
       )}
@@ -237,6 +255,7 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
       <div className="recommendation-columns">
         <div>
           <h4>Research and supervision evidence</h4>
+          <SupervisionEvidence person={c.person} verification={v} />
           <ul>
             {c.reasons.slice(0, 4).map((r) => (
               <li key={r}>{r}</li>

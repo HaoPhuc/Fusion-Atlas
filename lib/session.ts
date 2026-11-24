@@ -1,6 +1,6 @@
 import { boardSchema, countryCode } from "./regions";
 import { z } from "zod";
-import { PROVIDERS } from "./types";
+import { PROVIDERS, SUPERVISION_LEVELS } from "./types";
 import { matchingStateSchema } from "./matching";
 const str = z.string().max(30000);
 // Some older exports contain provider nulls for absent metadata.
@@ -35,6 +35,7 @@ const work = z.object({
   title: str,
   year: z.number(),
   type: str,
+  level: z.enum(SUPERVISION_LEVELS).optional(),
   // Repository descriptions can exceed 30,000 characters. Imports already cap the whole file at 25 MB.
   abstract: z.string().max(25_000_000),
   url: str,

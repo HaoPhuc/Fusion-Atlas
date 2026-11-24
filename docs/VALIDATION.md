@@ -1,5 +1,13 @@
 # Delivery validation
 
+## Supervision levels
+
+The suite passes all 71 tests (60 existing and 11 new). Offline fixtures check the six provider mappings, including DataCite’s “Master’s dissertation”, DOI and identifier-bridge merges, authored versus supervised works, and the inclusive five-year boundary. Ranking tests check the +6 and +10 bonuses, the higher-level question, the unchanged score for missing evidence, reviewed group contacts and the topic requirement for the contact lane. Backup and CSV tests cover unspecified levels on old records, the bachelor profile default, source links under earlier identity keys and formula escaping.
+
+Type checking, the production build and Prettier checks on the changed files passed. On this Windows sandbox the test runner used a temporary Node preload for the operating-system username lookup. A production Chromium check imported a version-one session with an older profile, changed the student level to master, checked the recommendation and filtered the Researchers list. The dossier summary fit at 1440, 768 and 390 px. A fresh browser profile restored the student level and thesis evidence from the exported session.
+
+The repository contains no confirmed OpenAIRE Graph v4 bachelor instance-type filter label. A single request for `instance_type:Bachelor thesis` returned no usable response in this environment. The thesis-only filter still requests doctoral, master and generic theses. An offline fixture verifies how an incoming `Bachelor thesis` instance is displayed.
+
 ## Cross-source researcher identities
 
 All 60 automated tests passed, including the 45 existing tests and 15 identity tests. Fixtures cover identifier bridges, shared affiliations and RORs, ambiguous initials, same-paper homonyms, work-scoped names, distinct coauthors, manual decisions and shuffled provider order. They also check historical keys after work deduplication, feedback and scoped official-page lookups, regional pins, shortlist backups and version-one sessions.

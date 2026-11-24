@@ -15,6 +15,7 @@ import {
 } from "@/lib/matching";
 import { normalize, safeUrl } from "@/lib/research";
 import { RoleEvidenceLine } from "./role-evidence";
+import { SupervisionEvidence } from "./supervision-evidence";
 import type { RoleOrder } from "@/lib/contact-roles";
 import { countries } from "@/lib/countries";
 type Props = {
@@ -131,6 +132,12 @@ export function RegionResults(p: Props) {
                 ? "A researcher at this institution has a strong topic match."
                 : pick.c.groupName}
             </p>
+            {!pick.lead && (
+              <SupervisionEvidence
+                person={pick.c.person}
+                verification={pick.c.verification}
+              />
+            )}
             {pick.c.works[0] && (
               <p>
                 <a

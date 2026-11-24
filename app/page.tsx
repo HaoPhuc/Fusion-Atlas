@@ -30,6 +30,8 @@ import {
 } from "@/lib/regions";
 import { ThemeSwitch } from "./components/theme-switch";
 import { ProfilePanel, Recommendations } from "./components/matching-panel";
+import { SupervisionEvidence } from "./components/supervision-evidence";
+import { atOrBelow, supervisionLevels, verificationFor } from "@/lib/levels";
 import {
   institutionGroupKey,
   personHasKey,
@@ -160,6 +162,7 @@ export default function Atlas() {
   const [error, setError] = useState("");
   const [includeUnknown, setIncludeUnknown] = useState(true);
   const [supervisorsOnly, setSupervisorsOnly] = useState(false);
+  const [levelOnly, setLevelOnly] = useState(false);
   const [limit, setLimit] = useState(40);
   const [selectedSnapshot, setSelected] = useState<Person>();
   const [saved, setSaved] = useState<Saved[]>([]);
@@ -263,9 +266,26 @@ export default function Atlas() {
         : [],
     [run, includeUnknown, matching.identityDecisions],
   );
-  const visiblePeople = supervisorsOnly
-    ? people.filter((p) => p.supervisedWorkIds?.length)
-    : people;
+  const visiblePeople = useMemo(
+    () =>
+      people.filter(
+        (p) =>
+          (!supervisorsOnly || p.supervisedWorkIds?.length) &&
+          (!levelOnly ||
+            atOrBelow(
+              supervisionLevels(p, verificationFor(p, matching.verifications))
+                .lowest,
+              matching.profile.studentLevel,
+            )),
+      ),
+    [
+      people,
+      supervisorsOnly,
+      levelOnly,
+      matching.verifications,
+      matching.profile.studentLevel,
+    ],
+  );
   const ranked = useMemo(
     () =>
       run ? contactCandidates(people, run.topic, matching, run.options) : [],
@@ -559,7 +579,10 @@ export default function Atlas() {
     setProfile(undefined);
     setGraphNext(undefined);
     setLimit(40);
-    if (!existing) setSupervisorsOnly(false);
+    if (!existing) {
+      setSupervisorsOnly(false);
+      setLevelOnly(false);
+    }
     setTab("matches");
     setView("discover");
     const failures = new Set<string>();
@@ -1453,6 +1476,18 @@ export default function Atlas() {
                       <label className="check-label">
                         <input
                           type="checkbox"
+                          checked={levelOnly}
+                          onChange={(e) => {
+                            setLevelOnly(e.target.checked);
+                            setLimit(40);
+                            setSelected(undefined);
+                          }}
+                        />
+                        Supervision at or below my level
+                      </label>
+                      <label className="check-label">
+                        <input
+                          type="checkbox"
                           checked={includeUnknown}
                           onChange={(e) => setIncludeUnknown(e.target.checked)}
                         />
@@ -1525,9 +1560,11 @@ export default function Atlas() {
                           <div className="empty">
                             {busy
                               ? "Searching scholarly sources…"
-                              : supervisorsOnly
-                                ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
-                                : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
+                              : levelOnly
+                                ? "No matching level evidence in these results. Turn off the level filter to see other researchers."
+                                : supervisorsOnly
+                                  ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
+                                  : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
                           </div>
                         )}
                         {visiblePeople.length > limit && (
@@ -1562,6 +1599,13 @@ export default function Atlas() {
                                 ? "Corresponding-author metadata found; this does not establish supervision."
                                 : "Authorship alone does not establish a supervisor role."}
                           </div>
+                          <SupervisionEvidence
+                            person={selected}
+                            verification={verificationFor(
+                              selected,
+                              matching.verifications,
+                            )}
+                          />
                           {!!selected.mergedBy?.length && (
                             <details>
                               <summary>
@@ -1948,7 +1992,7 @@ export default function Atlas() {
                   onClick={() =>
                     download(
                       "fusion-internship-shortlist.csv",
-                      shortlistCsv(saved),
+                      shortlistCsv(saved, matching.verifications),
                       "text/csv;charset=utf-8",
                     )
                   }

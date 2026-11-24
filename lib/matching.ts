@@ -10,6 +10,8 @@ import { z } from "zod";
 import { normalize, safeUrl } from "./research";
 import { institutionGroupKey, namesCompatible, personHasKey } from "./identity";
 import type { Person, Work } from "./types";
+import { SUPERVISION_LEVELS } from "./types";
+import { atOrBelow, supervisionLevels, verificationFor } from "./levels";
 import {
   listedPerson,
   listings,
@@ -22,6 +24,7 @@ export const studentProfileSchema = z.object({
   region: regionSchema.optional(),
   roleOrder: z.enum(roleOrders).default("all"),
   degree: z.string().max(120).default("Undergraduate"),
+  studentLevel: z.enum(["bachelor", "master", "doctoral"]).default("bachelor"),
   year: z.string().max(40).default(""),
   skills: z.string().max(600).default(""),
   interests: z.string().max(600).default(""),
@@ -292,7 +295,11 @@ export function rankCandidates(
   topic: string,
   state: MatchingState,
   now = Date.now(),
-): Recommendation[] {
+) {
+  const { studentLevel } = state.profile;
+  const studentDescription =
+    studentLevel === "bachelor" ? "undergraduate" : studentLevel;
+  const date = new Date(now);
   const searchTerms = concepts(topic);
   const wanted = concepts(topic + " " + state.profile.interests);
   const skills = concepts(state.profile.skills);
@@ -303,9 +310,8 @@ export function rankCandidates(
     (f) => normalize(f.topic) === normalize(topic),
   );
   const contacted = state.feedback.filter((f) => f.kind === "contacted");
-  const latest = [...state.verifications].reverse();
   return people
-    .map((p): Recommendation => {
+    .map((p): Recommendation & { levelBonus: number } => {
       const scored = p.works
         .map((w) => {
           const c = corpus(w);
@@ -338,21 +344,29 @@ export function rankCandidates(
               ? match * 60 +
                 Math.min(skillHits.length, 3) * 6 +
                 (styleHits.length ? 10 : 0) +
-                (w.year >= new Date(now).getUTCFullYear() - 3 ? 4 : 0)
+                (w.year >= date.getUTCFullYear() - 3 ? 4 : 0)
               : 0,
           };
         })
         .sort((a, b) => b.score - a.score || b.w.year - a.w.year);
       const best = scored[0];
-      const v = latest.find((v) => personHasKey(p, v.personKey));
+      const v = verificationFor(p, state.verifications);
+      const levels = supervisionLevels(p, v, date);
+      const levelBonus =
+        levels.officialUndergraduate && studentLevel === "bachelor"
+          ? 10
+          : SUPERVISION_LEVELS.some(
+                (level) =>
+                  levels.recent[level] > 0 && atOrBelow(level, studentLevel),
+              )
+            ? 6
+            : 0;
       const fresh =
         !!v &&
         now - Date.parse(v.checkedAt) >= 0 &&
         now - Date.parse(v.checkedAt) < 30 * 86400000;
       const role = fresh && v?.evidence.find((e) => e.kind === "role");
       const route = fresh && v?.evidence.find((e) => e.kind === "contact");
-      const undergraduate =
-        fresh && v?.evidence.find((e) => e.kind === "undergraduate");
       const own =
         contacted.find((f) => {
           if (personHasKey(p, f.personKey)) return true;
@@ -380,7 +394,7 @@ export function rankCandidates(
         );
       if (supervised)
         reasons.push(
-          "Explicit thesis supervision recorded; undergraduate availability remains unconfirmed.",
+          "Explicit thesis supervision recorded; current availability remains unconfirmed.",
         );
       if (role)
         reasons.push(`Official-page role evidence: ${role.text.slice(0, 150)}`);
@@ -393,8 +407,24 @@ export function rankCandidates(
         gaps.push(
           "A personal contact or application route still needs checking.",
         );
-      if (!undergraduate)
-        gaps.push("Ask whether the group hosts undergraduate students.");
+      if (levels.lowest && !atOrBelow(levels.lowest, studentLevel)) {
+        const singleLevel = SUPERVISION_LEVELS.every(
+          (level) => level === levels.lowest || levels.counts[level] === 0,
+        );
+        const recorded = singleLevel
+          ? `Recorded supervision is at ${levels.lowest} level only`
+          : `The lowest specified supervision level is ${levels.lowest}`;
+        gaps.push(
+          `${recorded}; ask whether they take ${studentLevel} students.`,
+        );
+      } else if (!(
+        studentLevel === "bachelor" &&
+        fresh &&
+        levels.officialUndergraduate
+      ))
+        gaps.push(
+          `Ask whether the group hosts ${studentDescription} students.`,
+        );
       if (
         state.profile.year ||
         (state.profile.degree && state.profile.degree !== "Undergraduate")
@@ -443,6 +473,7 @@ export function rankCandidates(
       const rank =
         (best?.score || 0) +
         (supervised ? 12 : 0) +
+        levelBonus +
         (role ? 15 : 0) +
         (route ? 5 : 0) +
         (preferredLocation && state.profile.countries.length ? 4 : 0) +
@@ -512,6 +543,7 @@ export function rankCandidates(
         person: p,
         roles,
         rank,
+        levelBonus,
         fit,
         reasons: reasons.length
           ? reasons
@@ -710,6 +742,7 @@ export function contactCandidates(
         Math.max(
           entry.rank,
           44 +
+            entry.levelBonus +
             overlap.length * 8 +
             skill.length * 5 +
             (l.studentEvidence ? 7 : 0) +
@@ -732,11 +765,13 @@ export function contactCandidates(
         : "Recheck the dated group listing and its contact instructions.",
       actionUrl: l.route,
       gaps: [
-        "Confirm that the group can host you for an undergraduate project.",
+        `Confirm that the group can host you for ${state.profile.studentLevel === "bachelor" ? "an undergraduate" : "a " + state.profile.studentLevel} project.`,
         ...entry.gaps.filter(
           (g) =>
             g.startsWith("Confirm timing") ||
             g.startsWith("Funding") ||
+            g.startsWith("Recorded supervision") ||
+            g.startsWith("The lowest specified supervision level") ||
             g.startsWith("Check eligibility"),
         ),
       ],

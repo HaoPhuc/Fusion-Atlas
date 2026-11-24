@@ -2,6 +2,8 @@ import type { Author, Institution, Person, Work } from "./types";
 import { normalize, orcidKey } from "./normalization";
 import { externalIds, nameKeys, resolveIdentities } from "./identity";
 import type { IdentityDecision } from "./types";
+import { levelSummaryLine, supervisionLevels, verificationFor } from "./levels";
+import type { Verification } from "./matching";
 export { normalize, orcidKey } from "./normalization";
 export const doiKey = (s?: string) =>
   s
@@ -203,7 +205,19 @@ const uniqueObjects = <T>(values: T[]) => [
 export function mergeWorks(input: Work[]): Work[] {
   const groups: Work[] = [];
   const keys = new Map<string, Work>();
-  const absorb = (old: Work, w: Work) => {
+  // A later identifier bridge can join groups in a different order than arrival.
+  const concreteLevelOrder = new Map<Work, number>();
+  const absorb = (old: Work, w: Work, order: number) => {
+    if (
+      w.level &&
+      w.level !== "unknown" &&
+      order < (concreteLevelOrder.get(old) ?? Infinity)
+    ) {
+      old.level = w.level;
+      concreteLevelOrder.set(old, order);
+    } else {
+      old.level ??= w.level;
+    }
     old.sources = [...new Set([...old.sources, ...w.sources])];
     old.queries = [...new Set([...old.queries, ...w.queries])];
     if (w.abstract.length > old.abstract.length) old.abstract = w.abstract;
@@ -233,7 +247,7 @@ export function mergeWorks(input: Work[]): Work[] {
     old.citedBy = Math.max(old.citedBy, w.citedBy);
     old.authors = mergeAuthors(old.authors, w.authors, old.id, w.id);
   };
-  for (const w of input) {
+  for (const [order, w] of input.entries()) {
     const fingerprints = [
       w.id,
       ...(w.doi ? ["doi:" + doiKey(w.doi)] : []),
@@ -250,12 +264,12 @@ export function mergeWorks(input: Work[]): Work[] {
     if (old) {
       // A later record can bridge a DOI-only record and an identifier-only record.
       for (const other of matches.slice(1)) {
-        absorb(old, other);
+        absorb(old, other, concreteLevelOrder.get(other) ?? Infinity);
         groups.splice(groups.indexOf(other), 1);
         for (const [key, value] of keys)
           if (value === other) keys.set(key, old);
       }
-      absorb(old, w);
+      absorb(old, w, order);
       fingerprints.forEach((k) => keys.set(k, old));
     } else {
       const copy = {
@@ -273,6 +287,8 @@ export function mergeWorks(input: Work[]): Work[] {
         })),
       };
       groups.push(copy);
+      if (copy.level && copy.level !== "unknown")
+        concreteLevelOrder.set(copy, order);
       fingerprints.forEach((k) => keys.set(k, copy));
     }
   }
@@ -398,7 +414,10 @@ export function csvCell(s: string) {
   const safe = /^[=+@\-\t\r]/.test(s) ? "'" + s : s;
   return '"' + safe.replace(/"/g, '""') + '"';
 }
-export function shortlistCsv(saved: SavedLike[]) {
+export function shortlistCsv(
+  saved: SavedLike[],
+  verifications: Verification[] = [],
+) {
   return [
     [
       "Researcher",
@@ -409,13 +428,19 @@ export function shortlistCsv(saved: SavedLike[]) {
       "Identity profile",
       "Authored works",
       "Named supervisor evidence",
+      "Supervision levels",
       "Evidence",
       "Saved",
     ]
       .map(csvCell)
       .join(","),
-    ...saved.map((s) =>
-      [
+    ...saved.map((s) => {
+      const levels = supervisionLevels(
+        s.person,
+        verificationFor(s.person, verifications),
+      );
+      const official = levels.officialUndergraduate;
+      return [
         s.person.name,
         s.person.institutions.map((i) => i.name).join("; "),
         s.status,
@@ -434,12 +459,16 @@ export function shortlistCsv(saved: SavedLike[]) {
           .filter((w) => s.person.supervisedWorkIds?.includes(w.id))
           .map((w) => w.url)
           .join("; "),
+        levelSummaryLine(levels) +
+          (official
+            ? ` · Official undergraduate page (checked ${official.checkedAt.slice(0, 10)}): ${official.url}`
+            : ""),
         s.person.works.map((w) => w.url).join("; "),
         s.savedAt,
       ]
         .map(csvCell)
-        .join(","),
-    ),
+        .join(",");
+    }),
   ].join("\r\n");
 }
 type SavedLike = {
