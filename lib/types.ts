@@ -32,6 +32,9 @@ export type Author = {
   id?: string;
   orcid?: string;
   externalId?: string;
+  // Identity evidence retained when two provider records describe one work.
+  previousNameKeys?: string[];
+  additionalExternalIds?: string[];
   profileUrl?: string;
   institutions: Institution[];
   corresponding?: boolean;
@@ -41,12 +44,21 @@ export type Supervisor = Author & {
   evidenceUrl: string;
 };
 export type SourceRecord = { name: string; url: string };
+export const SUPERVISION_LEVELS = [
+  "bachelor",
+  "master",
+  "doctoral",
+  "habilitation",
+  "unknown",
+] as const;
+export type SupervisionLevel = (typeof SUPERVISION_LEVELS)[number];
 export type Work = {
   id: string;
   doi?: string;
   title: string;
   year: number;
   type: string;
+  level?: SupervisionLevel;
   abstract: string;
   url: string;
   pdf?: string;
@@ -86,6 +98,12 @@ export type Person = {
   officialGroup?: string;
   officialRoleSource?: string;
   key: string;
+  aliases?: string[];
+  mergedBy?: {
+    rule: "identifier" | "name-institution" | "manual";
+    detail: string;
+  }[];
+  possibleDuplicates?: { key: string; name: string; reason: string }[];
   name: string;
   id?: string;
   orcid?: string;
@@ -99,6 +117,11 @@ export type Person = {
   matched: string[];
   identity: string;
   corresponding: boolean;
+};
+export type IdentityDecision = {
+  keys: string[];
+  decision: "same" | "different";
+  decidedAt: string;
 };
 export type Saved = {
   person: Person;

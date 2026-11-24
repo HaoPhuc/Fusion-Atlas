@@ -4,6 +4,7 @@ import type {
   Institution,
   Provider,
   SearchOptions,
+  SupervisionLevel,
   Work,
 } from "./types";
 import { safeUrl, doiKey } from "./research";
@@ -61,6 +62,7 @@ export function normalizeOpenAlex(w: any, query = ""): Work {
     title: w.display_name || w.title || "Untitled",
     year: w.publication_year || 0,
     type: w.type || "unknown",
+    level: w.type === "dissertation" ? "unknown" : undefined,
     abstract: abstractFromIndex(w.abstract_inverted_index),
     url:
       safeUrl(w.doi) || safeUrl(w.primary_location?.landing_page_url) || w.id,
@@ -93,6 +95,7 @@ export function normalizeCrossref(w: any, query = ""): Work {
       w.created?.["date-parts"]?.[0]?.[0] ||
       0,
     type: w.type || "unknown",
+    level: w.type === "dissertation" ? "unknown" : undefined,
     abstract: clean(w.abstract),
     url: safeUrl(w.URL) || `https://doi.org/${encodeURI(w.DOI)}`,
     citedBy: w["is-referenced-by-count"] || 0,
@@ -109,8 +112,28 @@ export function normalizeCrossref(w: any, query = ""): Work {
     })),
   };
 }
+function dataCiteLevel(
+  general = "",
+  resourceType = "",
+): SupervisionLevel | undefined {
+  if (
+    !/^(dissertation|thesis)$/i.test(general) &&
+    !/\b(thesis|dissertation)\b/i.test(resourceType)
+  )
+    return undefined;
+  if (/\b(bachelor|b\.?sc|honours)\b/i.test(resourceType)) return "bachelor";
+  if (/\b(master|m\.?sc)\b/i.test(resourceType)) return "master";
+  if (/\b(ph\.?d|doctor|doctoral|dissertation)\b/i.test(resourceType))
+    return "doctoral";
+  return "unknown";
+}
+
 export function normalizeDataCite(w: any, query = ""): Work {
   const a = w.attributes || {};
+  const level = dataCiteLevel(
+    a.types?.resourceTypeGeneral,
+    a.types?.resourceType,
+  );
   const url = safeUrl(a.url) || `https://doi.org/${encodeURI(w.id)}`;
   return {
     ...workBase("DataCite", w, query),
@@ -118,6 +141,7 @@ export function normalizeDataCite(w: any, query = ""): Work {
     title: clean(a.titles?.[0]?.title) || "Untitled",
     year: a.publicationYear || 0,
     type: a.types?.resourceTypeGeneral || a.types?.resourceType || "unknown",
+    level,
     abstract: clean(
       array(a.descriptions).find((d) => d.descriptionType === "Abstract")
         ?.description,
@@ -130,12 +154,7 @@ export function normalizeDataCite(w: any, query = ""): Work {
       },
     ],
     supervisors: array(a.contributors)
-      .filter(
-        (c) =>
-          /dissertation|thesis/i.test(
-            `${a.types?.resourceTypeGeneral} ${a.types?.resourceType}`,
-          ) && c.contributorType === "Supervisor",
-      )
+      .filter((c) => level !== undefined && c.contributorType === "Supervisor")
       .map((c) => ({
         name:
           [c.givenName, c.familyName].filter(Boolean).join(" ") || c.name || "",

@@ -1,5 +1,29 @@
 # Delivery validation
 
+## New since last search
+
+All 85 automated tests passed, including the 71 existing tests and 14 new history tests. Fixtures cover classification by key, alias and name with a shared affiliation, action precedence, the fixed baseline, group keys, bounded history, import merges, older sessions and preservation of unreadable storage. They also check that a researcher with more than 20 aliases retains the link to an earlier entry. Type checking, the production build and Prettier checks on the changed files passed. The Windows test runner used a temporary preload for the operating-system username lookup.
+
+A local Chromium check against the production build used fixture provider responses. A progressive page left storage untouched. Opening a dossier wrote just that identity, and pausing recorded the other results. The person stayed **New** through a continuation and became **Seen** on a repeat search. The check also covered the first-run header, repeat count, first-seen tooltip, persisted **Hide seen** preference, regional pin visibility, the entry count in the clear confirmation, cancelling and confirming the clear, and restoration from a session export. No browser runtime errors were observed in that workflow.
+
+A fresh browser context restored the exported history and filter preference. Opening an older version-one session in that context preserved the local history.
+
+## Supervision levels
+
+The suite passes all 71 tests (60 existing and 11 new). Offline fixtures check the six provider mappings, including DataCite’s “Master’s dissertation”, DOI and identifier-bridge merges, authored versus supervised works, and the inclusive five-year boundary. Ranking tests check the +6 and +10 bonuses, the higher-level question, the unchanged score for missing evidence, reviewed group contacts and the topic requirement for the contact lane. Backup and CSV tests cover unspecified levels on old records, the bachelor profile default, source links under earlier identity keys and formula escaping.
+
+Type checking, the production build and Prettier checks on the changed files passed. On this Windows sandbox the test runner used a temporary Node preload for the operating-system username lookup. A production Chromium check imported a version-one session with an older profile, changed the student level to master, checked the recommendation and filtered the Researchers list. The dossier summary fit at 1440, 768 and 390 px. A fresh browser profile restored the student level and thesis evidence from the exported session.
+
+The repository contains no confirmed OpenAIRE Graph v4 bachelor instance-type filter label. A single request for `instance_type:Bachelor thesis` returned no usable response in this environment. The thesis-only filter still requests doctoral, master and generic theses. An offline fixture verifies how an incoming `Bachelor thesis` instance is displayed.
+
+## Cross-source researcher identities
+
+All 60 automated tests passed, including the 45 existing tests and 15 identity tests. Fixtures cover identifier bridges, shared affiliations and RORs, ambiguous initials, same-paper homonyms, work-scoped names, distinct coauthors, manual decisions and shuffled provider order. They also check historical keys after work deduplication, feedback and scoped official-page lookups, regional pins, shortlist backups and version-one sessions.
+
+Type checking, the production build and the repository formatting check passed. The Windows sandbox could not return a username to the test runner through Node’s `os.userInfo()`. A temporary preload supplied the environment username so `tsx` could select its temporary directory.
+
+A local production-browser check imported a version-one session without identity fields. The dossier showed both candidates for an abbreviated name on desktop and at 390 px. Separate runs exercised **Different people** and **Same person**. Saving the merged researcher used the canonical key. Opening the exported session payload in a fresh browser profile restored the decision and shortlist. These checks used fixture records. They do not measure identity accuracy across live providers.
+
 ## Contact roles · version 1.4
 
 All 45 automated tests passed. The production build completed with TypeScript checks. Chromium checks used imported plasma-control searches with an empty literature set so the named contacts came directly from the reviewed institutional sources.

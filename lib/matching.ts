@@ -8,7 +8,10 @@ import {
 } from "./contact-roles";
 import { z } from "zod";
 import { normalize, safeUrl } from "./research";
+import { institutionGroupKey, namesCompatible, personHasKey } from "./identity";
 import type { Person, Work } from "./types";
+import { SUPERVISION_LEVELS } from "./types";
+import { atOrBelow, supervisionLevels, verificationFor } from "./levels";
 import {
   listedPerson,
   listings,
@@ -18,9 +21,11 @@ import {
 } from "./contact-routes";
 
 export const studentProfileSchema = z.object({
+  hideSeen: z.boolean().default(false),
   region: regionSchema.optional(),
   roleOrder: z.enum(roleOrders).default("all"),
   degree: z.string().max(120).default("Undergraduate"),
+  studentLevel: z.enum(["bachelor", "master", "doctoral"]).default("bachelor"),
   year: z.string().max(40).default(""),
   skills: z.string().max(600).default(""),
   interests: z.string().max(600).default(""),
@@ -115,20 +120,7 @@ export function sameContact(
     )
   )
     return false;
-  const a = normalize(p.name).split(" "),
-    b = normalize(identity.name).split(" ");
-  if (a.length < 2 || b.length < 2 || a[0][0] !== b[0][0]) return false;
-  if (a[0] !== b[0] && a[0].length > 1 && b[0].length > 1) return false;
-  return (
-    a
-      .slice(1)
-      .filter((s) => s.length > 1)
-      .join(" ") ===
-      b
-        .slice(1)
-        .filter((s) => s.length > 1)
-        .join(" ") && a.at(-1) === b.at(-1)
-  );
+  return namesCompatible(p.name, identity.name);
 }
 const listedIdentities = new Map(
   listings.map((l) => {
@@ -136,7 +128,23 @@ const listedIdentities = new Map(
     return [p.key, contactIdentity(p)];
   }),
 );
+export function feedbackMatchesPerson(p: Person, feedback: Feedback) {
+  if (personHasKey(p, feedback.personKey)) return true;
+  const identity =
+    feedback.identity || listedIdentities.get(feedback.personKey);
+  return !!identity && sameContact(p, identity);
+}
 export const matchingStateSchema = z.object({
+  identityDecisions: z
+    .array(
+      z.object({
+        keys: z.array(z.string().max(500)).min(2).max(10),
+        decision: z.enum(["same", "different"]),
+        decidedAt: z.string(),
+      }),
+    )
+    .max(500)
+    .default([]),
   profile: studentProfileSchema.default(defaultProfile),
   verifications: z.array(verificationSchema).max(300).default([]),
   feedback: z.array(feedbackSchema).max(1000).default([]),
@@ -258,6 +266,7 @@ function hasTopicMatch(terms: string[], matched: string[]) {
 }
 export type Recommendation = {
   person: Person;
+  literatureKey?: string;
   rank: number;
   fit: "Strong" | "Related" | "Broad";
   reasons: string[];
@@ -278,12 +287,26 @@ export type Recommendation = {
   roleLabel?: string;
   roles?: RoleEvidence[];
 };
+// Reviewed listings keep their own stable address even as search results change.
+export function canonicalContact(c: Recommendation): Person {
+  return c.literatureKey
+    ? {
+        ...c.person,
+        key: c.literatureKey,
+        aliases: [...new Set([c.person.key, ...(c.person.aliases || [])])],
+      }
+    : c.person;
+}
 export function rankCandidates(
   people: Person[],
   topic: string,
   state: MatchingState,
   now = Date.now(),
-): Recommendation[] {
+) {
+  const { studentLevel } = state.profile;
+  const studentDescription =
+    studentLevel === "bachelor" ? "undergraduate" : studentLevel;
+  const date = new Date(now);
   const searchTerms = concepts(topic);
   const wanted = concepts(topic + " " + state.profile.interests);
   const skills = concepts(state.profile.skills);
@@ -294,9 +317,8 @@ export function rankCandidates(
     (f) => normalize(f.topic) === normalize(topic),
   );
   const contacted = state.feedback.filter((f) => f.kind === "contacted");
-  const latest = new Map(state.verifications.map((v) => [v.personKey, v]));
   return people
-    .map((p): Recommendation => {
+    .map((p): Recommendation & { levelBonus: number } => {
       const scored = p.works
         .map((w) => {
           const c = corpus(w);
@@ -329,27 +351,32 @@ export function rankCandidates(
               ? match * 60 +
                 Math.min(skillHits.length, 3) * 6 +
                 (styleHits.length ? 10 : 0) +
-                (w.year >= new Date(now).getUTCFullYear() - 3 ? 4 : 0)
+                (w.year >= date.getUTCFullYear() - 3 ? 4 : 0)
               : 0,
           };
         })
         .sort((a, b) => b.score - a.score || b.w.year - a.w.year);
       const best = scored[0];
-      const v = latest.get(p.key);
+      const v = verificationFor(p, state.verifications);
+      const levels = supervisionLevels(p, v, date);
+      const levelBonus =
+        levels.officialUndergraduate && studentLevel === "bachelor"
+          ? 10
+          : SUPERVISION_LEVELS.some(
+                (level) =>
+                  levels.recent[level] > 0 && atOrBelow(level, studentLevel),
+              )
+            ? 6
+            : 0;
       const fresh =
         !!v &&
         now - Date.parse(v.checkedAt) >= 0 &&
         now - Date.parse(v.checkedAt) < 30 * 86400000;
       const role = fresh && v?.evidence.find((e) => e.kind === "role");
       const route = fresh && v?.evidence.find((e) => e.kind === "contact");
-      const undergraduate =
-        fresh && v?.evidence.find((e) => e.kind === "undergraduate");
       const own =
-        contacted.find((f) => {
-          if (f.personKey === p.key) return true;
-          const identity = f.identity || listedIdentities.get(f.personKey);
-          return !!identity && sameContact(p, identity);
-        }) || feedback.find((f) => f.personKey === p.key);
+        contacted.find((f) => feedbackMatchesPerson(p, f)) ||
+        feedback.findLast((f) => personHasKey(p, f.personKey));
       const supervised = (p.supervisedWorkIds?.length || 0) > 0;
       const preferredLocation =
         !state.profile.countries.length ||
@@ -371,7 +398,7 @@ export function rankCandidates(
         );
       if (supervised)
         reasons.push(
-          "Explicit thesis supervision recorded; undergraduate availability remains unconfirmed.",
+          "Explicit thesis supervision recorded; current availability remains unconfirmed.",
         );
       if (role)
         reasons.push(`Official-page role evidence: ${role.text.slice(0, 150)}`);
@@ -384,8 +411,24 @@ export function rankCandidates(
         gaps.push(
           "A personal contact or application route still needs checking.",
         );
-      if (!undergraduate)
-        gaps.push("Ask whether the group hosts undergraduate students.");
+      if (levels.lowest && !atOrBelow(levels.lowest, studentLevel)) {
+        const singleLevel = SUPERVISION_LEVELS.every(
+          (level) => level === levels.lowest || levels.counts[level] === 0,
+        );
+        const recorded = singleLevel
+          ? `Recorded supervision is at ${levels.lowest} level only`
+          : `The lowest specified supervision level is ${levels.lowest}`;
+        gaps.push(
+          `${recorded}; ask whether they take ${studentLevel} students.`,
+        );
+      } else if (!(
+        studentLevel === "bachelor" &&
+        fresh &&
+        levels.officialUndergraduate
+      ))
+        gaps.push(
+          `Ask whether the group hosts ${studentDescription} students.`,
+        );
       if (
         state.profile.year ||
         (state.profile.degree && state.profile.degree !== "Undergraduate")
@@ -419,7 +462,7 @@ export function rankCandidates(
       const matchingFeedback = feedback.filter(
         (f) =>
           f.kind === "good" &&
-          f.personKey !== p.key &&
+          !personHasKey(p, f.personKey) &&
           hits(f.terms, best ? corpus(best.w) : []).length >= 2,
       ).length;
       const theoreticalPenalty =
@@ -434,6 +477,7 @@ export function rankCandidates(
       const rank =
         (best?.score || 0) +
         (supervised ? 12 : 0) +
+        levelBonus +
         (role ? 15 : 0) +
         (route ? 5 : 0) +
         (preferredLocation && state.profile.countries.length ? 4 : 0) +
@@ -503,6 +547,7 @@ export function rankCandidates(
         person: p,
         roles,
         rank,
+        levelBonus,
         fit,
         reasons: reasons.length
           ? reasons
@@ -511,9 +556,7 @@ export function rankCandidates(
         matched: best?.matched || [],
         works,
         verification: v,
-        groupKey: primary
-          ? primary.id || normalize(primary.name)
-          : `unknown:${p.key}`,
+        groupKey: primary ? institutionGroupKey(primary) : `unknown:${p.key}`,
         groupName: primary?.name || "Affiliation not established",
         groupNote: primary
           ? "Grouped by indexed institution; a shared research group is not assumed."
@@ -589,19 +632,20 @@ export function contactCandidates(
     scope.country || scope.institution
       ? people.filter((p) => p.institutions.some(inScope))
       : people;
-  const verifiedInScope = new Map(
-    scoped.map((p) => [p.key, p.institutions.filter(inScope)]),
-  );
   const scopedState =
     scope.country || scope.institution
       ? {
           ...state,
           verifications: state.verifications.filter((v) =>
-            verifiedInScope
-              .get(v.personKey)
-              ?.some((i) =>
-                matchesInstitution(i.name, v.affiliation || v.institution),
-              ),
+            scoped.some(
+              (p) =>
+                personHasKey(p, v.personKey) &&
+                p.institutions.some(
+                  (i) =>
+                    inScope(i) &&
+                    matchesInstitution(i.name, v.affiliation || v.institution),
+                ),
+            ),
           ),
         }
       : state;
@@ -611,11 +655,8 @@ export function contactCandidates(
         scope.country || scope.institution
           ? c.person.institutions.find(inScope)
           : undefined;
-      if (
-        affiliation &&
-        c.groupKey !== (affiliation.id || normalize(affiliation.name))
-      ) {
-        c.groupKey = affiliation.id || normalize(affiliation.name);
+      if (affiliation && c.groupKey !== institutionGroupKey(affiliation)) {
+        c.groupKey = institutionGroupKey(affiliation);
         c.groupName = affiliation.name;
       }
       const programme = programmes.find((r) =>
@@ -649,7 +690,16 @@ export function contactCandidates(
     const listedProfile = listedPerson(l);
     const p =
       matches.length === 1
-        ? { ...matches[0].person, key: listedProfile.key }
+        ? {
+            ...matches[0].person,
+            key: listedProfile.key,
+            aliases: [
+              ...new Set([
+                matches[0].person.key,
+                ...(matches[0].person.aliases || []),
+              ]),
+            ],
+          }
         : listedProfile;
     if (matches.length === 1) merged.add(matches[0].person.key);
     const entry = rankCandidates([p], topic, state, now)[0];
@@ -677,6 +727,7 @@ export function contactCandidates(
         ));
     contacts.push({
       ...entry,
+      literatureKey: matches.length === 1 ? matches[0].person.key : undefined,
       person: { ...p, officialGroup: l.group, officialRoleSource: l.source },
       groupName: l.group + " · " + l.institution,
       groupKey: "listed:" + normalize(l.group),
@@ -695,6 +746,7 @@ export function contactCandidates(
         Math.max(
           entry.rank,
           44 +
+            entry.levelBonus +
             overlap.length * 8 +
             skill.length * 5 +
             (l.studentEvidence ? 7 : 0) +
@@ -717,11 +769,13 @@ export function contactCandidates(
         : "Recheck the dated group listing and its contact instructions.",
       actionUrl: l.route,
       gaps: [
-        "Confirm that the group can host you for an undergraduate project.",
+        `Confirm that the group can host you for ${state.profile.studentLevel === "bachelor" ? "an undergraduate" : "a " + state.profile.studentLevel} project.`,
         ...entry.gaps.filter(
           (g) =>
             g.startsWith("Confirm timing") ||
             g.startsWith("Funding") ||
+            g.startsWith("Recorded supervision") ||
+            g.startsWith("The lowest specified supervision level") ||
             g.startsWith("Check eligibility"),
         ),
       ],

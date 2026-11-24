@@ -30,10 +30,26 @@ import {
 } from "@/lib/regions";
 import { ThemeSwitch } from "./components/theme-switch";
 import { ProfilePanel, Recommendations } from "./components/matching-panel";
+import { SeenBadge } from "./components/seen-badge";
+import { useSeenHistory } from "./components/use-seen-history";
+import {
+  classifySeen,
+  emptyLedger,
+  indexBaseline,
+  seenResults,
+} from "@/lib/seen";
+import { SupervisionEvidence } from "./components/supervision-evidence";
+import { atOrBelow, supervisionLevels, verificationFor } from "@/lib/levels";
+import {
+  institutionGroupKey,
+  personHasKey,
+  peopleShareKey,
+} from "@/lib/identity";
 import {
   matchingStateSchema,
   verificationSchema,
   contactCandidates,
+  canonicalContact,
   contactIdentity,
   recommendationGroups,
   type MatchingState,
@@ -108,6 +124,11 @@ function Out({ href, children }: { href?: string; children: React.ReactNode }) {
     <span>{children}</span>
   );
 }
+function sameSavedEntry(entry: Saved, row: Saved) {
+  return (
+    entry.savedAt === row.savedAt && personHasKey(entry.person, row.person.key)
+  );
+}
 function download(name: string, data: string, type = "application/json") {
   const url = URL.createObjectURL(new Blob([data], { type }));
   const a = document.createElement("a");
@@ -149,9 +170,14 @@ export default function Atlas() {
   const [error, setError] = useState("");
   const [includeUnknown, setIncludeUnknown] = useState(true);
   const [supervisorsOnly, setSupervisorsOnly] = useState(false);
+  const [levelOnly, setLevelOnly] = useState(false);
   const [limit, setLimit] = useState(40);
   const [selectedSnapshot, setSelected] = useState<Person>();
   const [saved, setSaved] = useState<Saved[]>([]);
+  const history = useSeenHistory();
+  const { remember } = history;
+  const [baseline, setBaseline] = useState(emptyLedger);
+  const completedSweep = useRef<Run>(undefined);
   const [storageReady, setStorageReady] = useState(false);
   const [config, setConfig] = useState<{
     openalexKey: boolean;
@@ -247,44 +273,102 @@ export default function Atlas() {
             run.options.country,
             run.options.institution?.id,
             includeUnknown,
+            matching.identityDecisions,
           )
         : [],
-    [run, includeUnknown],
+    [run, includeUnknown, matching.identityDecisions],
   );
-  const selected = selectedSnapshot
-    ? (selectedSnapshot.officialRoleSource
-        ? selectedSnapshot
-        : people.find((p) => p.key === selectedSnapshot.key)) ||
-      (selectedSnapshot.key.startsWith("unverified:")
-        ? people.find(
-            (p) =>
-              normalize(p.name) === normalize(selectedSnapshot.name) &&
-              p.works.some((w) =>
-                selectedSnapshot.works.some((s) => s.id === w.id),
-              ),
-          )
-        : undefined) ||
-      selectedSnapshot
-    : undefined;
-  const visiblePeople = supervisorsOnly
-    ? people.filter((p) => p.supervisedWorkIds?.length)
-    : people;
   const ranked = useMemo(
     () =>
       run ? contactCandidates(people, run.topic, matching, run.options) : [],
     [people, run, matching],
   );
+  const results = useMemo(() => seenResults(people, ranked), [people, ranked]);
+  const prior = useMemo(() => indexBaseline(baseline), [baseline]);
+  const statuses = useMemo(
+    () =>
+      new Map(
+        Array.from(results, ([key, result]) => [
+          key,
+          classifySeen(result.person, prior, matching, saved),
+        ]),
+      ),
+    [results, prior, matching, saved],
+  );
+  const board = run?.board || blankBoard;
+  const hiddenKeys = useMemo(() => {
+    const hidden = new Set<string>();
+    if (matching.profile.hideSeen) {
+      const pins = Object.values(board.pins);
+      for (const [key, { person }] of results) {
+        if (
+          statuses.get(key)?.kind !== "new" &&
+          !pins.some((pin) => personHasKey(person, pin))
+        )
+          hidden.add(key);
+      }
+    }
+    return hidden;
+  }, [results, statuses, board.pins, matching.profile.hideSeen]);
+  const visibleRanked = useMemo(
+    () =>
+      ranked.filter((c) => !hiddenKeys.has(c.literatureKey || c.person.key)),
+    [ranked, hiddenKeys],
+  );
+  const visiblePeople = useMemo(
+    () =>
+      people.filter(
+        (p) =>
+          !hiddenKeys.has(p.key) &&
+          (!supervisorsOnly || p.supervisedWorkIds?.length) &&
+          (!levelOnly ||
+            atOrBelow(
+              supervisionLevels(p, verificationFor(p, matching.verifications))
+                .lowest,
+              matching.profile.studentLevel,
+            )),
+      ),
+    [
+      people,
+      hiddenKeys,
+      supervisorsOnly,
+      levelOnly,
+      matching.verifications,
+      matching.profile.studentLevel,
+    ],
+  );
+  useEffect(() => {
+    if (run && completedSweep.current === run) {
+      completedSweep.current = undefined;
+      remember(results.values(), run.topic, true);
+    }
+  }, [run, results, remember]);
+  const recommendationBadge = (c: Recommendation) => (
+    <SeenBadge
+      status={statuses.get(c.literatureKey || c.person.key)!}
+      newGroup={prior.isNewGroup(c.groupKey)}
+    />
+  );
+  const listing =
+    selectedSnapshot?.officialRoleSource &&
+    ranked.find(
+      (c) => c.groupSource && peopleShareKey(c.person, selectedSnapshot),
+    );
+  const selected = listing
+    ? canonicalContact(listing)
+    : selectedSnapshot &&
+      (people.find((p) => personHasKey(p, selectedSnapshot.key)) ||
+        selectedSnapshot);
   const region =
     run && !run.options.country && !run.options.institution
       ? matching.profile.region
       : undefined;
-  const board = run?.board || blankBoard;
   const picks = useMemo(
     () =>
       region
-        ? makeBoard(ranked, region, board, matching.profile.roleOrder)
+        ? makeBoard(visibleRanked, region, board, matching.profile.roleOrder)
         : {},
-    [ranked, region, board, matching.profile.roleOrder],
+    [visibleRanked, region, board, matching.profile.roleOrder],
   );
   function updateRegion(g?: Region) {
     setMatchingReady(true);
@@ -292,6 +376,35 @@ export default function Atlas() {
   }
   function saveBoard(b: Board) {
     setRun((r) => (r ? { ...r, board: b } : r));
+  }
+  function decideIdentity(
+    person: Person,
+    key: string,
+    decision: "same" | "different",
+  ) {
+    const keys = [person.key, key];
+    if (keys.some((k) => k.length > 500)) {
+      setError(
+        "This identity key exceeds the 500-character limit for a saved decision.",
+      );
+      return;
+    }
+    const isPair = (d: MatchingState["identityDecisions"][number]) =>
+      d.keys.length === 2 && keys.every((k) => d.keys.includes(k));
+    if (
+      matching.identityDecisions.length >= 500 &&
+      !matching.identityDecisions.some(isPair)
+    ) {
+      setError("You have reached the limit of 500 saved identity decisions.");
+      return;
+    }
+    setMatching((s) => ({
+      ...s,
+      identityDecisions: [
+        ...s.identityDecisions.filter((d) => !isPair(d)),
+        { keys, decision, decidedAt: new Date().toISOString() },
+      ],
+    }));
   }
   function feedback(c: Recommendation, kind?: FeedbackKind) {
     if (!run) return;
@@ -303,14 +416,14 @@ export default function Atlas() {
             !(
               (f.kind === "contacted" ||
                 normalize(f.topic) === normalize(run.topic)) &&
-              (f.personKey === c.person.key ||
+              (personHasKey(c.person, f.personKey) ||
                 f.personKey === c.feedback?.personKey)
             ),
         ),
         ...(kind
           ? [
               {
-                personKey: c.person.key,
+                personKey: c.literatureKey || c.person.key,
                 identity: contactIdentity(c.person),
                 topic: run.topic,
                 kind,
@@ -333,13 +446,13 @@ export default function Atlas() {
       setProgress("Checking official pages for " + candidate.person.name + "…");
       const inst =
         candidate.person.institutions.find(
-          (i) => (i.id || normalize(i.name)) === candidate.groupKey,
+          (i) => institutionGroupKey(i) === candidate.groupKey,
         ) || candidate.person.institutions[0];
       try {
         const d = await api(
           {
             op: "verify",
-            personKey: candidate.person.key,
+            personKey: candidate.literatureKey || candidate.person.key,
             name: candidate.person.name,
             institutionId: inst?.id.startsWith("https://openalex.org/I")
               ? inst.id
@@ -354,7 +467,9 @@ export default function Atlas() {
           setMatching((s) => ({
             ...s,
             verifications: [
-              ...s.verifications.filter((o) => o.personKey !== v.personKey),
+              ...s.verifications.filter(
+                (o) => !personHasKey(candidate.person, o.personKey),
+              ),
               v,
             ].slice(-300),
           }));
@@ -521,7 +636,11 @@ export default function Atlas() {
     setProfile(undefined);
     setGraphNext(undefined);
     setLimit(40);
-    if (!existing) setSupervisorsOnly(false);
+    if (!existing) {
+      setBaseline(history.snapshot());
+      setSupervisorsOnly(false);
+      setLevelOnly(false);
+    }
     setTab("matches");
     setView("discover");
     const failures = new Set<string>();
@@ -627,6 +746,8 @@ export default function Atlas() {
             snapshot.topic,
             snapshot.options.country,
             snapshot.options.institution?.id,
+            true,
+            matching.identityDecisions,
           ),
           snapshot.topic,
           matching,
@@ -653,7 +774,12 @@ export default function Atlas() {
         await checkContacts(top, operation.signal);
       }
     } finally {
-      setRun({ ...snapshot, tasks: snapshot.tasks.map((t) => ({ ...t })) });
+      const finished = {
+        ...snapshot,
+        tasks: snapshot.tasks.map((t) => ({ ...t })),
+      };
+      completedSweep.current = finished;
+      setRun(finished);
       setBusy(false);
       setProgress(
         stop.current
@@ -669,7 +795,7 @@ export default function Atlas() {
   }
   function savePerson(person: Person) {
     setSaved((s) =>
-      s.some((v) => v.person.key === person.key)
+      s.some((v) => peopleShareKey(person, v.person))
         ? s
         : [
             ...s,
@@ -752,7 +878,7 @@ export default function Atlas() {
         setSaved((v) => [
           ...v,
           ...backup.data.shortlist.filter(
-            (s) => !v.some((x) => x.person.key === s.person.key),
+            (s) => !v.some((x) => peopleShareKey(x.person, s.person)),
           ),
         ]);
         setView("shortlist");
@@ -760,6 +886,8 @@ export default function Atlas() {
         return;
       }
       const d = sessionSchema.parse(raw);
+      if (d.seen) history.add(d.seen);
+      setBaseline(history.snapshot());
       setStorageReady(true);
       setRun(d);
       if (d.matching) {
@@ -770,7 +898,7 @@ export default function Atlas() {
         setSaved((v) => [
           ...v,
           ...d.shortlist!.filter(
-            (s) => !v.some((x) => x.person.key === s.person.key),
+            (s) => !v.some((x) => peopleShareKey(x.person, s.person)),
           ),
         ]);
       setError("");
@@ -800,6 +928,8 @@ export default function Atlas() {
     }
   }
   const selectPerson = (p: Person) => {
+    if (run)
+      remember([results.get(p.key) || { person: p, groupKeys: [] }], run.topic);
     setSelected(p);
     setProfile(undefined);
     setGraphNext(undefined);
@@ -907,6 +1037,7 @@ export default function Atlas() {
                         warnings: messages,
                         shortlist: saved,
                         matching,
+                        seen: history.snapshot(),
                       },
                       null,
                       2,
@@ -930,6 +1061,11 @@ export default function Atlas() {
             />
           </div>
         </header>
+        {history.notice && (
+          <div className="notice error" role="status">
+            {history.notice}
+          </div>
+        )}
         {error && (
           <div className="notice error" role="alert">
             {error}
@@ -1279,6 +1415,20 @@ export default function Atlas() {
                         : ""}
                       {cacheHits > 0 && ` · ${cacheHits} cached page(s)`}
                     </small>
+                    {baseline.entries.length > 0 && (
+                      <small>
+                        {results.size} results ·{" "}
+                        {
+                          Array.from(statuses.values()).filter(
+                            (s) => s.kind === "new",
+                          ).length
+                        }{" "}
+                        new since{" "}
+                        {baseline.lastRunAt
+                          ? new Date(baseline.lastRunAt).toLocaleDateString()
+                          : "previous searches"}
+                      </small>
+                    )}
                   </div>
                   <div>
                     {busy ? (
@@ -1308,7 +1458,7 @@ export default function Atlas() {
                       "Recommended contacts",
                       region
                         ? Object.keys(picks).length
-                        : recommendationGroups(ranked).length,
+                        : recommendationGroups(visibleRanked).length,
                     ],
                     ["people", "Researchers", people.length],
                     ["papers", "Papers & theses", run.works.length],
@@ -1329,8 +1479,27 @@ export default function Atlas() {
                     </button>
                   ))}
                 </div>
+                {(tab === "matches" || tab === "people") && (
+                  <label className="check-label">
+                    <input
+                      type="checkbox"
+                      checked={matching.profile.hideSeen}
+                      onChange={(e) => {
+                        const hideSeen = e.target.checked;
+                        setMatching((s) => ({
+                          ...s,
+                          profile: { ...s.profile, hideSeen },
+                        }));
+                        setSelected(undefined);
+                        setLimit(40);
+                      }}
+                    />
+                    Hide seen
+                  </label>
+                )}
                 {tab === "matches" && (
                   <Recommendations
+                    renderBadge={recommendationBadge}
                     regional={
                       region
                         ? {
@@ -1338,7 +1507,7 @@ export default function Atlas() {
                             order: matching.profile.roleOrder,
                             board,
                             picks,
-                            candidates: ranked,
+                            candidates: visibleRanked,
                             onBoard: saveBoard,
                             onSearch: (codes, b) =>
                               void sweep({ ...run, board: b }, codes),
@@ -1364,20 +1533,23 @@ export default function Atlas() {
                       saveBoard({ ...board, pins: {} });
                     }}
                     studentProfile={matching.profile}
-                    candidates={ranked}
+                    candidates={visibleRanked}
                     busy={busy}
                     checking={checking}
-                    savedKeys={saved.map((s) => s.person.key)}
-                    onSave={(c) => savePerson(c.person)}
+                    savedKeys={saved.flatMap((s) => [
+                      s.person.key,
+                      ...(s.person.aliases || []),
+                    ])}
+                    onSave={(c) => savePerson(canonicalContact(c))}
                     onExplore={(c) => {
                       setTab("people");
-                      selectPerson(c.person);
+                      selectPerson(canonicalContact(c));
                     }}
                     onVerify={(c, url) => void verify([c], url)}
                     onVerifyTop={() =>
                       void verify(
                         recommendationGroups(
-                          ranked,
+                          visibleRanked,
                           8,
                           matching.profile.roleOrder,
                         )
@@ -1410,6 +1582,18 @@ export default function Atlas() {
                       <label className="check-label">
                         <input
                           type="checkbox"
+                          checked={levelOnly}
+                          onChange={(e) => {
+                            setLevelOnly(e.target.checked);
+                            setLimit(40);
+                            setSelected(undefined);
+                          }}
+                        />
+                        Supervision at or below my level
+                      </label>
+                      <label className="check-label">
+                        <input
+                          type="checkbox"
                           checked={includeUnknown}
                           onChange={(e) => setIncludeUnknown(e.target.checked)}
                         />
@@ -1434,7 +1618,9 @@ export default function Atlas() {
                           <button
                             className={
                               "person-row " +
-                              (selected?.key === p.key ? "chosen" : "")
+                              (selected && peopleShareKey(p, selected)
+                                ? "chosen"
+                                : "")
                             }
                             key={p.key}
                             onClick={() => selectPerson(p)}
@@ -1447,7 +1633,10 @@ export default function Atlas() {
                                 .join("")}
                             </div>
                             <div className="person-info">
-                              <strong>{p.name}</strong>
+                              <strong>
+                                {p.name}{" "}
+                                <SeenBadge status={statuses.get(p.key)!} />
+                              </strong>
                               <span>
                                 {p.institutions
                                   .map((i) => i.name)
@@ -1460,9 +1649,11 @@ export default function Atlas() {
                                 {p.matched.length
                                   ? p.matched.slice(0, 4).join(" · ")
                                   : "Retrieved lead · read the evidence"}
-                                {p.identity.startsWith("Unverified")
+                                {p.identity.toLowerCase().includes("unverified")
                                   ? " · identity unverified"
                                   : ""}
+                                {!!p.possibleDuplicates?.length &&
+                                  " · Possible duplicate"}
                               </small>
                             </div>
                             <div className="paper-count">
@@ -1478,9 +1669,13 @@ export default function Atlas() {
                           <div className="empty">
                             {busy
                               ? "Searching scholarly sources…"
-                              : supervisorsOnly
-                                ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
-                                : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
+                              : matching.profile.hideSeen && hiddenKeys.size
+                                ? "No researchers match the current filters. Turn off Hide seen to include earlier results."
+                                : levelOnly
+                                  ? "No matching level evidence in these results. Turn off the level filter to see other researchers."
+                                  : supervisorsOnly
+                                    ? "No explicit supervision records in these results. Try a thesis search with HAL, DataCite, and theses.fr, or include unknown affiliations."
+                                    : "No researcher identities in this scope. Check Coverage for source errors, expand the date range, or include unknown affiliations."}
                           </div>
                         )}
                         {visiblePeople.length > limit && (
@@ -1515,18 +1710,63 @@ export default function Atlas() {
                                 ? "Corresponding-author metadata found; this does not establish supervision."
                                 : "Authorship alone does not establish a supervisor role."}
                           </div>
+                          <SupervisionEvidence
+                            person={selected}
+                            verification={verificationFor(
+                              selected,
+                              matching.verifications,
+                            )}
+                          />
+                          {!!selected.mergedBy?.length && (
+                            <details>
+                              <summary>
+                                Identity evidence ({selected.mergedBy.length})
+                              </summary>
+                              <ul>
+                                {selected.mergedBy.map((e, i) => (
+                                  <li key={i}>{e.detail}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                          {selected.possibleDuplicates?.map((d) => (
+                            <div key={d.key} className="identity-note">
+                              <p>
+                                Possibly the same person as{" "}
+                                <strong>{d.name}</strong> — {d.reason}
+                              </p>
+                              <div className="geo-actions">
+                                <button
+                                  onClick={() =>
+                                    decideIdentity(selected, d.key, "same")
+                                  }
+                                >
+                                  Same person
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    decideIdentity(selected, d.key, "different")
+                                  }
+                                >
+                                  Different people
+                                </button>
+                              </div>
+                            </div>
+                          ))}
                           <button
                             className="primary"
                             onClick={() => savePerson(selected)}
                           >
-                            {saved.some(
-                              (s) => s.person.key === selected.key,
+                            {saved.some((s) =>
+                              peopleShareKey(selected, s.person),
                             ) ? (
                               <Check size={15} />
                             ) : (
                               <Bookmark size={15} />
                             )}{" "}
-                            {saved.some((s) => s.person.key === selected.key)
+                            {saved.some((s) =>
+                              peopleShareKey(selected, s.person),
+                            )
                               ? "On your shortlist"
                               : "Save researcher"}
                           </button>
@@ -1863,7 +2103,7 @@ export default function Atlas() {
                   onClick={() =>
                     download(
                       "fusion-internship-shortlist.csv",
-                      shortlistCsv(saved),
+                      shortlistCsv(saved, matching.verifications),
                       "text/csv;charset=utf-8",
                     )
                   }
@@ -1885,9 +2125,7 @@ export default function Atlas() {
                   <h2>{s.person.name}</h2>
                   <button
                     onClick={() =>
-                      setSaved((v) =>
-                        v.filter((x) => x.person.key !== s.person.key),
-                      )
+                      setSaved((v) => v.filter((x) => !sameSavedEntry(x, s)))
                     }
                   >
                     Remove
@@ -1912,7 +2150,7 @@ export default function Atlas() {
                       onChange={(e) =>
                         setSaved((v) =>
                           v.map((x) =>
-                            x.person.key === s.person.key
+                            sameSavedEntry(x, s)
                               ? { ...x, status: e.target.value }
                               : x,
                           ),
@@ -1941,7 +2179,7 @@ export default function Atlas() {
                       onChange={(e) =>
                         setSaved((v) =>
                           v.map((x) =>
-                            x.person.key === s.person.key
+                            sameSavedEntry(x, s)
                               ? { ...x, notes: e.target.value }
                               : x,
                           ),
@@ -1963,6 +2201,27 @@ export default function Atlas() {
         )}
         {view === "settings" && (
           <section className="settings">
+            <div className="settings-row">
+              <div>
+                <h2>Seen history</h2>
+                <p>
+                  {history.ledger.entries.length} researcher entries in this
+                  browser. Clearing history keeps your shortlist, feedback and
+                  official-page checks.
+                </p>
+              </div>
+              <button
+                disabled={
+                  busy ||
+                  (!history.ledger.entries.length && !history.ledger.lastRunAt)
+                }
+                onClick={() => {
+                  if (history.clear()) setBaseline(emptyLedger);
+                }}
+              >
+                Clear seen history
+              </button>
+            </div>
             <div className="settings-row">
               <div>
                 <h2>OpenAlex</h2>

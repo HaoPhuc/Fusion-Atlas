@@ -1,7 +1,8 @@
 import { boardSchema, countryCode } from "./regions";
 import { z } from "zod";
-import { PROVIDERS } from "./types";
+import { PROVIDERS, SUPERVISION_LEVELS } from "./types";
 import { matchingStateSchema } from "./matching";
+import { seenLedgerSchema } from "./seen";
 const str = z.string().max(30000);
 // Some older exports contain provider nulls for absent metadata.
 const optionalString = str.nullish().transform((v) => v ?? undefined);
@@ -20,6 +21,8 @@ const author = z.object({
   id: optionalString,
   orcid: optionalString,
   externalId: optionalString,
+  previousNameKeys: z.array(str).max(2000).optional(),
+  additionalExternalIds: z.array(str).max(500).optional(),
   profileUrl: optionalString,
   institutions: z.array(institution).max(300),
   corresponding: z
@@ -33,6 +36,7 @@ const work = z.object({
   title: str,
   year: z.number(),
   type: str,
+  level: z.enum(SUPERVISION_LEVELS).optional(),
   // Repository descriptions can exceed 30,000 characters. Imports already cap the whole file at 25 MB.
   abstract: z.string().max(25_000_000),
   url: str,
@@ -68,6 +72,20 @@ const person = z.object({
   officialGroup: optionalString,
   officialRoleSource: optionalString,
   key: str,
+  aliases: z.array(str).max(50000).optional(),
+  mergedBy: z
+    .array(
+      z.object({
+        rule: z.enum(["identifier", "name-institution", "manual"]),
+        detail: str,
+      }),
+    )
+    .max(50000)
+    .optional(),
+  possibleDuplicates: z
+    .array(z.object({ key: str, name: str, reason: str }))
+    .max(5)
+    .optional(),
   name: str,
   id: optionalString,
   orcid: optionalString,
@@ -91,6 +109,7 @@ export const shortlistBackupSchema = z.object({
   shortlist: shortlistSchema,
 });
 export const sessionSchema = z.object({
+  seen: seenLedgerSchema.optional(),
   version: z.literal(1),
   topic: z.string().max(250),
   options: z

@@ -1,4 +1,5 @@
 "use client";
+import { personHasKey } from "@/lib/identity";
 import {
   countryName,
   makeBoard,
@@ -14,9 +15,11 @@ import {
 } from "@/lib/matching";
 import { normalize, safeUrl } from "@/lib/research";
 import { RoleEvidenceLine } from "./role-evidence";
+import { SupervisionEvidence } from "./supervision-evidence";
 import type { RoleOrder } from "@/lib/contact-roles";
 import { countries } from "@/lib/countries";
 type Props = {
+  renderBadge: (c: Recommendation) => React.ReactNode;
   order: RoleOrder;
   candidates: Recommendation[];
   region: Region;
@@ -49,7 +52,7 @@ export function RegionResults(p: Props) {
       ? p.candidates.filter(
           (c) =>
             c.groupKey === pick.c.groupKey &&
-            c.person.key !== pick.key &&
+            !personHasKey(c.person, pick.key) &&
             !c.hidden &&
             c.fit !== "Broad",
         )
@@ -70,7 +73,7 @@ export function RegionResults(p: Props) {
         kind === "contacted"
           ? p.candidates.filter(
               (c) =>
-                c.person.key !== pick.key &&
+                !personHasKey(c.person, pick.key) &&
                 !sameContact(c.person, contactIdentity(pick.c.person)),
             )
           : p.candidates;
@@ -120,13 +123,25 @@ export function RegionResults(p: Props) {
                 ? " · ≈" + Math.round(pick.km).toLocaleString() + " km"
                 : ""}
             </small>
-            <h4>{pick.lead ? pick.institution : pick.c.person.name}</h4>
+            <h4>
+              {pick.lead ? pick.institution : pick.c.person.name}{" "}
+              {p.renderBadge(pick.c)}
+            </h4>
+            {!!pick.c.person.possibleDuplicates?.length && (
+              <small>Possible duplicate</small>
+            )}
             <RoleEvidenceLine c={pick.c} />
             <p>
               {pick.lead
                 ? "A researcher at this institution has a strong topic match."
                 : pick.c.groupName}
             </p>
+            {!pick.lead && (
+              <SupervisionEvidence
+                person={pick.c.person}
+                verification={pick.c.verification}
+              />
+            )}
             {pick.c.works[0] && (
               <p>
                 <a
@@ -172,7 +187,12 @@ export function RegionResults(p: Props) {
                 </summary>
                 {teammates.map((c) => (
                   <div key={c.person.key} className="alternative-contact">
-                    <strong>{c.person.name}</strong>
+                    <strong>
+                      {c.person.name} {p.renderBadge(c)}
+                    </strong>
+                    {!!c.person.possibleDuplicates?.length && (
+                      <small>Possible duplicate</small>
+                    )}
                     <RoleEvidenceLine c={c} />
                     <button
                       disabled={p.busy}

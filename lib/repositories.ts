@@ -1,5 +1,5 @@
 import { doiKey, safeUrl } from "./research";
-import type { Author, Work } from "./types";
+import type { Author, SupervisionLevel, Work } from "./types";
 
 const list = (v: any): any[] => (Array.isArray(v) ? v : v == null ? [] : [v]);
 const clean = (v: any): string =>
@@ -47,7 +47,14 @@ export const HAL_FIELDS = [
   "keyword_s",
 ].join(",");
 
+const halLevels = new Map<string, SupervisionLevel>([
+  ["THESE", "doctoral"],
+  ["HDR", "habilitation"],
+  ["MEM", "master"],
+]);
+
 export function normalizeHal(w: any, query = ""): Work {
+  const level = halLevels.get(w.docType_s);
   const url =
     safeUrl(w.uri_s) || `https://hal.science/${encodeURIComponent(w.halId_s)}`;
   const halIds = new Map<string, string>();
@@ -65,16 +72,8 @@ export function normalizeHal(w: any, query = ""): Work {
     title: first(w.en_title_s) || first(w.title_s) || "Untitled",
     abstract: first(w.en_abstract_s) || first(w.abstract_s),
     year: Number(w.defenseDateY_i || w.publicationDateY_i) || 0,
-    type:
-      (
-        {
-          THESE: "doctoral thesis",
-          HDR: "habilitation thesis",
-          MEM: "master thesis",
-        } as Record<string, string>
-      )[w.docType_s] ||
-      w.docType_s ||
-      "unknown",
+    type: level ? `${level} thesis` : w.docType_s || "unknown",
+    level,
     url,
     pdf: safeUrl(w.fileMain_s),
     records: [{ name: "HAL", url }],
@@ -133,6 +132,7 @@ export function normalizeThesesFr(w: any, query = ""): Work {
       Number(String(w.dateSoutenance || "").match(/\b(?:19|20)\d{2}\b/)?.[0]) ||
       0,
     type: "doctoral thesis",
+    level: "doctoral",
     abstract: clean(w.resumes?.en || w.resumes?.fr),
     url,
     records: [{ name: "theses.fr", url }],
@@ -159,8 +159,16 @@ export function normalizeThesesFr(w: any, query = ""): Work {
   };
 }
 
+const openAireLevels = new Map<string, SupervisionLevel>([
+  ["Doctoral thesis", "doctoral"],
+  ["Master thesis", "master"],
+  ["Bachelor thesis", "bachelor"],
+  ["Thesis", "unknown"],
+]);
+
 export function normalizeOpenAire(w: any, query = ""): Work {
   const instances = list(w.instances);
+  const levels = instances.map((i) => openAireLevels.get(i.type));
   const pids = [...list(w.pids), ...instances.flatMap((i) => list(i.pids))];
   const doi = doiKey(
     pids.find((p) => String(p.scheme).toLowerCase() === "doi")?.value,
@@ -184,6 +192,9 @@ export function normalizeOpenAire(w: any, query = ""): Work {
     url,
     title: clean(w.mainTitle) || "Untitled",
     year: Number(String(w.publicationDate || "").slice(0, 4)) || 0,
+    level:
+      levels.find((level) => level && level !== "unknown") ??
+      levels.find((level) => level === "unknown"),
     type:
       instances.find((i) => /thesis/i.test(i.type))?.type ||
       instances[0]?.type ||

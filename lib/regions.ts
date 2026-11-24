@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Recommendation } from "./matching";
 import type { Institution } from "./types";
 import { normalize } from "./research";
+import { institutionGroupKey, personHasKey } from "./identity";
 import { countries } from "./countries";
 export const countryCode = z.string().regex(/^[A-Z]{2}$/);
 export const citySchema = z.object({
@@ -124,7 +125,7 @@ export function makeBoard(
     if (c.lane === "explore" && !topicalWork) continue;
     const inst =
       c.person.institutions.find(
-        (i) => i.id === c.groupKey || normalize(i.name) === c.groupKey,
+        (i) => institutionGroupKey(i) === c.groupKey,
       ) || c.person.institutions[0];
     if (!inst) continue;
     const place = location(c, inst),
@@ -135,6 +136,8 @@ export function makeBoard(
     if (
       !country ||
       board.skipGroups.includes(c.groupKey) ||
+      (!c.groupSource &&
+        board.skipGroups.includes(inst.id || normalize(inst.name))) ||
       board.skipInstitutions.includes(normalize(institution))
     )
       continue;
@@ -174,17 +177,20 @@ export function makeBoard(
     assigned.set(normalize(p.institution), !!p.c.groupSource);
     groups.add(p.c.groupKey);
     people.add(p.key);
+    for (const alias of p.c.person.aliases || []) people.add(alias);
     if (s.type === "home" && p.city) cities.add(p.city);
   };
   const free = (p: Pick) =>
     !groups.has(p.c.groupKey) &&
     !people.has(p.key) &&
+    !p.c.person.aliases?.some((k) => people.has(k)) &&
     (!assigned.has(normalize(p.institution)) ||
       (!!p.c.groupSource && assigned.get(normalize(p.institution)) === true));
   for (const s of seats) {
     if (!board.pins[s.id]) continue;
     const p = pool.find(
-      (p) => p.key === board.pins[s.id] && fits(s, p) && free(p),
+      (p) =>
+        personHasKey(p.c.person, board.pins[s.id]) && fits(s, p) && free(p),
     );
     if (p) assign(s, p);
   }

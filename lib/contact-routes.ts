@@ -1,4 +1,4 @@
-import { normalize } from "./research";
+import { normalize } from "./normalization";
 import type { Person } from "./types";
 
 // Reviewed official group listings. This catalogue supplements live worldwide literature discovery.

@@ -1,5 +1,7 @@
 "use client";
+import { personHasKey } from "@/lib/identity";
 import { RoleEvidenceLine } from "./role-evidence";
+import { SupervisionEvidence } from "./supervision-evidence";
 import { roleOptions, roleOrders, type RoleOrder } from "@/lib/contact-roles";
 import { RegionResults } from "./region-results";
 import { useState } from "react";
@@ -74,6 +76,22 @@ export function ProfilePanel({
               onChange={(e) => update("degree", e.target.value)}
               placeholder="Undergraduate physics"
             />
+          </label>
+          <label>
+            Student level
+            <select
+              value={profile.studentLevel}
+              onChange={(e) =>
+                update(
+                  "studentLevel",
+                  e.target.value as StudentProfile["studentLevel"],
+                )
+              }
+            >
+              <option value="bachelor">Bachelor (BSc)</option>
+              <option value="master">Master (MSc)</option>
+              <option value="doctoral">Doctoral (PhD)</option>
+            </select>
           </label>
           <label>
             Year of study
@@ -167,9 +185,10 @@ export function ProfilePanel({
             </select>
           </label>
           <p className="small">
-            Skills, interests and work style affect ranking. Your degree, dates
-            and funding needs help you check programme eligibility. Your profile
-            stays in this browser and your session backups.
+            Student level, skills, interests and work style affect ranking. Your
+            degree, dates and funding needs help you check programme
+            eligibility. Your profile stays in this browser and your session
+            backups.
           </p>
         </div>
       )}
@@ -185,10 +204,11 @@ const labels: Record<FeedbackKind, string> = {
   dismissed: "Dismiss",
 };
 type Props = {
+  renderBadge: (c: Recommendation) => React.ReactNode;
   onRoleOrder: (value: RoleOrder) => void;
   regional?: Omit<
     React.ComponentProps<typeof RegionResults>,
-    "busy" | "renderEvidence" | "onContacted" | "onVerify"
+    "busy" | "renderEvidence" | "renderBadge" | "onContacted" | "onVerify"
   >;
   topic: string;
   scope: { country: string; institution?: { name: string } };
@@ -206,6 +226,7 @@ type Props = {
 function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
   const [url, setUrl] = useState("");
   const v = c.verification;
+  const saved = p.savedKeys.some((k) => personHasKey(c.person, k));
   return (
     <article className="recommendation" data-person-key={c.person.key}>
       <div className="recommendation-title">
@@ -217,7 +238,12 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
                 ? "Supervision or role evidence"
                 : "Research lead · role needs checking"}
           </span>
-          <h3>{c.person.name}</h3>
+          <h3>
+            {c.person.name} {p.renderBadge(c)}
+          </h3>
+          {!!c.person.possibleDuplicates?.length && (
+            <small>Possible duplicate</small>
+          )}
           <RoleEvidenceLine c={c} />
           <p>{c.groupName}</p>
         </div>
@@ -232,6 +258,7 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
       <div className="recommendation-columns">
         <div>
           <h4>Research and supervision evidence</h4>
+          <SupervisionEvidence person={c.person} verification={v} />
           <ul>
             {c.reasons.slice(0, 4).map((r) => (
               <li key={r}>{r}</li>
@@ -262,7 +289,7 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
             onClick={() => p.onVerify(c)}
           >
             <RefreshCw size={14} />
-            {p.checking === c.person.key
+            {p.checking && personHasKey(c.person, p.checking)
               ? "Checking official pages…"
               : v
                 ? "Refresh official evidence"
@@ -348,12 +375,8 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
       </details>
       <div className="recommendation-actions">
         <button onClick={() => p.onSave(c)}>
-          {p.savedKeys.includes(c.person.key) ? (
-            <Check size={14} />
-          ) : (
-            <Bookmark size={14} />
-          )}
-          {p.savedKeys.includes(c.person.key) ? "Saved" : "Save lead"}
+          {saved ? <Check size={14} /> : <Bookmark size={14} />}
+          {saved ? "Saved" : "Save lead"}
         </button>
         <button onClick={() => p.onExplore(c)}>Read full dossier</button>
         <label className="feedback-select">
@@ -455,6 +478,7 @@ export function Recommendations(p: Props) {
       {p.regional ? (
         <RegionResults
           {...p.regional}
+          renderBadge={p.renderBadge}
           busy={p.busy}
           onContacted={(c) => p.onFeedback(c, "contacted")}
           onVerify={p.onVerify}
@@ -486,7 +510,9 @@ export function Recommendations(p: Props) {
             <div className="empty">
               {p.busy
                 ? "Building the first candidates…"
-                : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
+                : p.studentProfile.hideSeen
+                  ? "No suggested contacts match the current filters. Turn off Hide seen to include earlier results."
+                  : "No contact with both a research match and supervision or staff-role evidence surfaced in this pass. Continue the sweep to check more sources."}
             </div>
           )}
           {groups.map(({ lead, alternatives }) => (
@@ -505,7 +531,12 @@ export function Recommendations(p: Props) {
                       {alternatives.slice(0, 5).map((c) => (
                         <div className="alternative-contact" key={c.person.key}>
                           <span>
-                            <strong>{c.person.name}</strong>
+                            <strong>
+                              {c.person.name} {p.renderBadge(c)}
+                            </strong>
+                            {!!c.person.possibleDuplicates?.length && (
+                              <small>Possible duplicate</small>
+                            )}
                             <RoleEvidenceLine c={c} />
                             <small>
                               {c.fit} fit ·{" "}
@@ -576,11 +607,16 @@ export function Recommendations(p: Props) {
               {checks.map((c) => (
                 <div className="alternative-contact" key={c.person.key}>
                   <span>
-                    <strong>{c.person.name}</strong>
+                    <strong>
+                      {c.person.name} {p.renderBadge(c)}
+                    </strong>
+                    {!!c.person.possibleDuplicates?.length && (
+                      <small>Possible duplicate</small>
+                    )}
                     <small>{c.groupName}</small>
                   </span>
                   <button disabled={p.busy} onClick={() => p.onVerify(c)}>
-                    {p.checking === c.person.key
+                    {p.checking && personHasKey(c.person, p.checking)
                       ? "Checking…"
                       : "Check official role"}
                   </button>
@@ -603,7 +639,7 @@ export function Recommendations(p: Props) {
           {hidden.map((c) => (
             <div className="alternative-contact" key={c.person.key}>
               <span>
-                {c.person.name} · {labels[c.feedback!.kind]}
+                {c.person.name} · {labels[c.feedback!.kind]} {p.renderBadge(c)}
               </span>
               <button onClick={() => p.onFeedback(c, undefined)}>
                 Restore
