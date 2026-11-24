@@ -1,5 +1,13 @@
 # Delivery validation
 
+## Cross-source researcher identities
+
+All 60 automated tests passed, including the 45 existing tests and 15 identity tests. Fixtures cover identifier bridges, shared affiliations and RORs, ambiguous initials, same-paper homonyms, work-scoped names, distinct coauthors, manual decisions and shuffled provider order. They also check historical keys after work deduplication, feedback and scoped official-page lookups, regional pins, shortlist backups and version-one sessions.
+
+Type checking, the production build and the repository formatting check passed. The Windows sandbox could not return a username to the test runner through Node’s `os.userInfo()`. A temporary preload supplied the environment username so `tsx` could select its temporary directory.
+
+A local production-browser check imported a version-one session without identity fields. The dossier showed both candidates for an abbreviated name on desktop and at 390 px. Separate runs exercised **Different people** and **Same person**. Saving the merged researcher used the canonical key. Opening the exported session payload in a fresh browser profile restored the decision and shortlist. These checks used fixture records. They do not measure identity accuracy across live providers.
+
 ## Contact roles · version 1.4
 
 All 45 automated tests passed. The production build completed with TypeScript checks. Chromium checks used imported plasma-control searches with an empty literature set so the named contacts came directly from the reviewed institutional sources.

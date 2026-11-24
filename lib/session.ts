@@ -20,6 +20,8 @@ const author = z.object({
   id: optionalString,
   orcid: optionalString,
   externalId: optionalString,
+  previousNameKeys: z.array(str).max(2000).optional(),
+  additionalExternalIds: z.array(str).max(500).optional(),
   profileUrl: optionalString,
   institutions: z.array(institution).max(300),
   corresponding: z
@@ -68,6 +70,20 @@ const person = z.object({
   officialGroup: optionalString,
   officialRoleSource: optionalString,
   key: str,
+  aliases: z.array(str).max(50000).optional(),
+  mergedBy: z
+    .array(
+      z.object({
+        rule: z.enum(["identifier", "name-institution", "manual"]),
+        detail: str,
+      }),
+    )
+    .max(50000)
+    .optional(),
+  possibleDuplicates: z
+    .array(z.object({ key: str, name: str, reason: str }))
+    .max(5)
+    .optional(),
   name: str,
   id: optionalString,
   orcid: optionalString,

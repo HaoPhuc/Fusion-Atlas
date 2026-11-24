@@ -1,16 +1,8 @@
 import type { Author, Institution, Person, Work } from "./types";
-export const normalize = (s: string) =>
-  s
-    .normalize("NFKD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
-export const orcidKey = (s?: string) =>
-  s
-    ?.replace(/^https?:\/\/orcid.org\//i, "")
-    .replace(/\/$/, "")
-    .toUpperCase();
+import { normalize, orcidKey } from "./normalization";
+import { externalIds, nameKeys, resolveIdentities } from "./identity";
+import type { IdentityDecision } from "./types";
+export { normalize, orcidKey } from "./normalization";
 export const doiKey = (s?: string) =>
   s
     ?.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "")
@@ -119,25 +111,65 @@ export function frenchQueries(topic: string) {
     terms.push("diagnostic plasma fusion");
   return terms.slice(0, 2);
 }
-function mergeAuthors<T extends Author>(left: T[], right: T[]): T[] {
+function providerAuthorMetadata({
+  previousNameKeys,
+  additionalExternalIds,
+  ...record
+}: Author) {
+  return JSON.stringify(record);
+}
+function mergeAuthors<T extends Author>(
+  left: T[],
+  right: T[],
+  workId: string,
+  incomingId: string,
+): T[] {
   const out = left.map((a) => ({ ...a, institutions: [...a.institutions] }));
+  const available = new Set(out);
+  const incomingNames = new Map<string, number>();
   for (const a of right) {
-    const candidates = out.filter(
+    const name = normalize(a.name);
+    incomingNames.set(name, (incomingNames.get(name) || 0) + 1);
+  }
+  for (const a of right) {
+    const incomingIds = externalIds(a);
+    const sharesId = (b: Author) =>
+      (a.id && a.id === b.id) ||
+      (a.orcid && orcidKey(a.orcid) === orcidKey(b.orcid)) ||
+      incomingIds.some((id) => externalIds(b).includes(id));
+    const name = normalize(a.name);
+    const candidates = [...available].filter(
       (b) =>
-        (normalize(b.name) === normalize(a.name) ||
-          (a.orcid && orcidKey(a.orcid) === orcidKey(b.orcid)) ||
-          (a.externalId && a.externalId === b.externalId)) &&
+        (name === normalize(b.name) || sharesId(b)) &&
         !(a.id && b.id && a.id !== b.id) &&
         !(a.orcid && b.orcid && orcidKey(a.orcid) !== orcidKey(b.orcid)) &&
-        !(
-          a.externalId &&
-          b.externalId &&
-          a.externalId.split(":")[0] === b.externalId.split(":")[0] &&
-          a.externalId !== b.externalId
+        !incomingIds.some((id) =>
+          externalIds(b).some(
+            (other) => id !== other && id.split(":")[0] === other.split(":")[0],
+          ),
         ),
     );
-    if (candidates.length === 1) {
-      const b = candidates[0];
+    const identified = candidates.filter(sharesId);
+    // Match across provider records one-to-one. An anonymous homonym must
+    // not consume another author's identified entry earlier in the loop.
+    const b =
+      identified.length === 1
+        ? identified[0]
+        : candidates.length === 1 && incomingNames.get(name) === 1
+          ? candidates[0]
+          : candidates.find(
+              (candidate) =>
+                providerAuthorMetadata(candidate) === providerAuthorMetadata(a),
+            );
+    if (b) {
+      available.delete(b);
+      const historical = new Set([
+        ...nameKeys(b, workId),
+        ...nameKeys(a, incomingId),
+        ...(b.previousNameKeys || []),
+        ...(a.previousNameKeys || []),
+      ]);
+      const ids = new Set([...externalIds(b), ...incomingIds]);
       b.id ||= a.id;
       b.orcid ||= a.orcid;
       b.externalId ||= a.externalId;
@@ -147,8 +179,21 @@ function mergeAuthors<T extends Author>(left: T[], right: T[]): T[] {
         ...b.institutions,
         ...a.institutions,
       ]);
-    } else if (!candidates.length)
-      out.push({ ...a, institutions: [...a.institutions] });
+      for (const key of nameKeys(b, workId)) historical.delete(key);
+      if (historical.size) b.previousNameKeys = [...historical];
+      if (b.externalId) ids.delete(b.externalId);
+      if (ids.size) b.additionalExternalIds = [...ids];
+    } else {
+      const copy = { ...a, institutions: [...a.institutions] };
+      if (incomingId !== workId && !a.institutions.length) {
+        const historical = new Set([
+          ...(a.previousNameKeys || []),
+          ...nameKeys(a, incomingId),
+        ]);
+        if (historical.size) copy.previousNameKeys = [...historical];
+      }
+      out.push(copy);
+    }
   }
   return out;
 }
@@ -177,11 +222,16 @@ export function mergeWorks(input: Work[]): Work[] {
       ...(old.relatedTo || []),
       ...(w.relatedTo || []),
     ]);
-    old.supervisors = mergeAuthors(old.supervisors || [], w.supervisors || []);
+    old.supervisors = mergeAuthors(
+      old.supervisors || [],
+      w.supervisors || [],
+      old.id,
+      w.id,
+    );
     if (w.discovered === "query") old.discovered = "query";
     old.references = [...new Set([...old.references, ...w.references])];
     old.citedBy = Math.max(old.citedBy, w.citedBy);
-    old.authors = mergeAuthors(old.authors, w.authors);
+    old.authors = mergeAuthors(old.authors, w.authors, old.id, w.id);
   };
   for (const w of input) {
     const fingerprints = [
@@ -233,34 +283,21 @@ export function uniqueInstitutions(values: Institution[]) {
   for (const i of values) {
     const key = i.id || normalize(i.name),
       old = result.get(key);
+    const institution = old?.ror && !i.ror ? { ...i, ror: old.ror } : i;
     result.set(
       key,
       old?.lat !== undefined && i.lat === undefined
         ? {
-            ...i,
+            ...institution,
             city: old.city,
             lat: old.lat,
             lon: old.lon,
             country: old.country,
           }
-        : i,
+        : institution,
     );
   }
   return [...result.values()];
-}
-function personKey(a: Author, w: Work) {
-  return a.orcid
-    ? `orcid:${orcidKey(a.orcid)}`
-    : a.id ||
-        a.externalId ||
-        `unverified:${normalize(a.name)}:${
-          a.institutions.length
-            ? a.institutions
-                .map((i) => i.id || normalize(i.name))
-                .sort()
-                .join("|")
-            : w.id
-        }`;
 }
 export function peopleFrom(
   works: Work[],
@@ -268,6 +305,7 @@ export function peopleFrom(
   country = "",
   institutionId = "",
   includeUnknown = true,
+  decisions: IdentityDecision[] = [],
 ): Person[] {
   const tokens = normalize(topic)
     .split(" ")
@@ -276,28 +314,28 @@ export function peopleFrom(
         x.length > 2 &&
         !["and", "the", "for", "with", "fusion", "research"].includes(x),
     );
-  const people = new Map<string, Person>();
-  // ORCID wins when a source links it to an OpenAlex ID; otherwise keep identities separate.
-  const orcids = new Map<string, string>();
-  works.forEach((w) =>
-    [...w.authors, ...(w.supervisors || [])].forEach((a) => {
-      if (a.id && a.orcid) orcids.set(a.id, a.orcid);
-      if (a.externalId && a.orcid) orcids.set(a.externalId, a.orcid);
-    }),
-  );
-  for (const w of works) {
-    const participants = [
-      ...w.authors.map((a) => ({ a, role: "author" })),
-      ...(w.supervisors || []).map((a) => ({ a, role: "supervisor" })),
-    ];
-    for (const { a: original, role } of participants) {
-      const a = {
-        ...original,
-        orcid:
-          original.orcid ||
-          (original.id ? orcids.get(original.id) : undefined) ||
-          (original.externalId ? orcids.get(original.externalId) : undefined),
-      };
+  const people: Person[] = [];
+  for (const { occurrences, ...identity } of resolveIdentities(
+    works,
+    decisions,
+  )) {
+    const p: Person = {
+      ...identity,
+      institutions: [],
+      works: [],
+      authoredWorkIds: [],
+      supervisedWorkIds: [],
+      score: 0,
+      matched: [],
+      corresponding: false,
+    };
+    // Identifiers apply to the whole cluster. Geographic filters still apply to
+    // each occurrence's evidence, including papers where affiliation is unknown.
+    for (const { author: a, role, work: w } of occurrences) {
+      p.id ||= a.id;
+      p.orcid ||= a.orcid;
+      p.externalId ||= a.externalId;
+      p.profileUrl ||= a.profileUrl;
       const known = a.institutions.filter((i) => i.country);
       if (
         country &&
@@ -314,34 +352,6 @@ export function peopleFrom(
           ))
       )
         continue;
-      const key = personKey(a, w);
-      let p = people.get(key);
-      if (!p) {
-        p = {
-          key,
-          name: a.name,
-          id: a.id,
-          orcid: a.orcid,
-          externalId: a.externalId,
-          profileUrl: a.profileUrl,
-          institutions: [],
-          works: [],
-          authoredWorkIds: [],
-          supervisedWorkIds: [],
-          score: 0,
-          matched: [],
-          identity:
-            a.id || a.orcid || a.externalId
-              ? "Provider identifier"
-              : "Unverified name / affiliation grouping",
-          corresponding: false,
-        };
-        people.set(key, p);
-      }
-      p.id ||= a.id;
-      p.orcid ||= a.orcid;
-      p.externalId ||= a.externalId;
-      p.profileUrl ||= a.profileUrl;
       if (!p.works.some((x) => x.id === w.id)) p.works.push(w);
       const roleWorks =
         role === "author" ? p.authoredWorkIds! : p.supervisedWorkIds!;
@@ -352,9 +362,10 @@ export function peopleFrom(
       ]);
       p.corresponding ||= !!a.corresponding;
     }
+    if (p.works.length) people.push(p);
   }
   const searchTexts = new WeakMap<Work, string>();
-  for (const p of people.values()) {
+  for (const p of people) {
     p.works.sort((a, b) => b.year - a.year);
     p.matched = tokens.filter((t) =>
       p.works.some((w) => {
@@ -377,7 +388,7 @@ export function peopleFrom(
         5,
       );
   }
-  return [...people.values()].sort(
+  return people.sort(
     (a, b) => b.score - a.score || a.name.localeCompare(b.name),
   );
 }

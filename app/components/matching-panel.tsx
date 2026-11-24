@@ -1,4 +1,5 @@
 "use client";
+import { personHasKey } from "@/lib/identity";
 import { RoleEvidenceLine } from "./role-evidence";
 import { roleOptions, roleOrders, type RoleOrder } from "@/lib/contact-roles";
 import { RegionResults } from "./region-results";
@@ -206,6 +207,7 @@ type Props = {
 function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
   const [url, setUrl] = useState("");
   const v = c.verification;
+  const saved = p.savedKeys.some((k) => personHasKey(c.person, k));
   return (
     <article className="recommendation" data-person-key={c.person.key}>
       <div className="recommendation-title">
@@ -218,6 +220,9 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
                 : "Research lead · role needs checking"}
           </span>
           <h3>{c.person.name}</h3>
+          {!!c.person.possibleDuplicates?.length && (
+            <small>Possible duplicate</small>
+          )}
           <RoleEvidenceLine c={c} />
           <p>{c.groupName}</p>
         </div>
@@ -262,7 +267,7 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
             onClick={() => p.onVerify(c)}
           >
             <RefreshCw size={14} />
-            {p.checking === c.person.key
+            {p.checking && personHasKey(c.person, p.checking)
               ? "Checking official pages…"
               : v
                 ? "Refresh official evidence"
@@ -348,12 +353,8 @@ function RecommendationRow({ c, ...p }: Props & { c: Recommendation }) {
       </details>
       <div className="recommendation-actions">
         <button onClick={() => p.onSave(c)}>
-          {p.savedKeys.includes(c.person.key) ? (
-            <Check size={14} />
-          ) : (
-            <Bookmark size={14} />
-          )}
-          {p.savedKeys.includes(c.person.key) ? "Saved" : "Save lead"}
+          {saved ? <Check size={14} /> : <Bookmark size={14} />}
+          {saved ? "Saved" : "Save lead"}
         </button>
         <button onClick={() => p.onExplore(c)}>Read full dossier</button>
         <label className="feedback-select">
@@ -506,6 +507,9 @@ export function Recommendations(p: Props) {
                         <div className="alternative-contact" key={c.person.key}>
                           <span>
                             <strong>{c.person.name}</strong>
+                            {!!c.person.possibleDuplicates?.length && (
+                              <small>Possible duplicate</small>
+                            )}
                             <RoleEvidenceLine c={c} />
                             <small>
                               {c.fit} fit ·{" "}
@@ -577,10 +581,13 @@ export function Recommendations(p: Props) {
                 <div className="alternative-contact" key={c.person.key}>
                   <span>
                     <strong>{c.person.name}</strong>
+                    {!!c.person.possibleDuplicates?.length && (
+                      <small>Possible duplicate</small>
+                    )}
                     <small>{c.groupName}</small>
                   </span>
                   <button disabled={p.busy} onClick={() => p.onVerify(c)}>
-                    {p.checking === c.person.key
+                    {p.checking && personHasKey(c.person, p.checking)
                       ? "Checking…"
                       : "Check official role"}
                   </button>

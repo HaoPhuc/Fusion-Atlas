@@ -8,6 +8,7 @@ import {
 } from "./contact-roles";
 import { z } from "zod";
 import { normalize, safeUrl } from "./research";
+import { institutionGroupKey, namesCompatible, personHasKey } from "./identity";
 import type { Person, Work } from "./types";
 import {
   listedPerson,
@@ -115,20 +116,7 @@ export function sameContact(
     )
   )
     return false;
-  const a = normalize(p.name).split(" "),
-    b = normalize(identity.name).split(" ");
-  if (a.length < 2 || b.length < 2 || a[0][0] !== b[0][0]) return false;
-  if (a[0] !== b[0] && a[0].length > 1 && b[0].length > 1) return false;
-  return (
-    a
-      .slice(1)
-      .filter((s) => s.length > 1)
-      .join(" ") ===
-      b
-        .slice(1)
-        .filter((s) => s.length > 1)
-        .join(" ") && a.at(-1) === b.at(-1)
-  );
+  return namesCompatible(p.name, identity.name);
 }
 const listedIdentities = new Map(
   listings.map((l) => {
@@ -137,6 +125,16 @@ const listedIdentities = new Map(
   }),
 );
 export const matchingStateSchema = z.object({
+  identityDecisions: z
+    .array(
+      z.object({
+        keys: z.array(z.string().max(500)).min(2).max(10),
+        decision: z.enum(["same", "different"]),
+        decidedAt: z.string(),
+      }),
+    )
+    .max(500)
+    .default([]),
   profile: studentProfileSchema.default(defaultProfile),
   verifications: z.array(verificationSchema).max(300).default([]),
   feedback: z.array(feedbackSchema).max(1000).default([]),
@@ -258,6 +256,7 @@ function hasTopicMatch(terms: string[], matched: string[]) {
 }
 export type Recommendation = {
   person: Person;
+  literatureKey?: string;
   rank: number;
   fit: "Strong" | "Related" | "Broad";
   reasons: string[];
@@ -278,6 +277,16 @@ export type Recommendation = {
   roleLabel?: string;
   roles?: RoleEvidence[];
 };
+// Reviewed listings keep their own stable address even as search results change.
+export function canonicalContact(c: Recommendation): Person {
+  return c.literatureKey
+    ? {
+        ...c.person,
+        key: c.literatureKey,
+        aliases: [...new Set([c.person.key, ...(c.person.aliases || [])])],
+      }
+    : c.person;
+}
 export function rankCandidates(
   people: Person[],
   topic: string,
@@ -294,7 +303,7 @@ export function rankCandidates(
     (f) => normalize(f.topic) === normalize(topic),
   );
   const contacted = state.feedback.filter((f) => f.kind === "contacted");
-  const latest = new Map(state.verifications.map((v) => [v.personKey, v]));
+  const latest = [...state.verifications].reverse();
   return people
     .map((p): Recommendation => {
       const scored = p.works
@@ -335,7 +344,7 @@ export function rankCandidates(
         })
         .sort((a, b) => b.score - a.score || b.w.year - a.w.year);
       const best = scored[0];
-      const v = latest.get(p.key);
+      const v = latest.find((v) => personHasKey(p, v.personKey));
       const fresh =
         !!v &&
         now - Date.parse(v.checkedAt) >= 0 &&
@@ -346,10 +355,10 @@ export function rankCandidates(
         fresh && v?.evidence.find((e) => e.kind === "undergraduate");
       const own =
         contacted.find((f) => {
-          if (f.personKey === p.key) return true;
+          if (personHasKey(p, f.personKey)) return true;
           const identity = f.identity || listedIdentities.get(f.personKey);
           return !!identity && sameContact(p, identity);
-        }) || feedback.find((f) => f.personKey === p.key);
+        }) || feedback.findLast((f) => personHasKey(p, f.personKey));
       const supervised = (p.supervisedWorkIds?.length || 0) > 0;
       const preferredLocation =
         !state.profile.countries.length ||
@@ -419,7 +428,7 @@ export function rankCandidates(
       const matchingFeedback = feedback.filter(
         (f) =>
           f.kind === "good" &&
-          f.personKey !== p.key &&
+          !personHasKey(p, f.personKey) &&
           hits(f.terms, best ? corpus(best.w) : []).length >= 2,
       ).length;
       const theoreticalPenalty =
@@ -511,9 +520,7 @@ export function rankCandidates(
         matched: best?.matched || [],
         works,
         verification: v,
-        groupKey: primary
-          ? primary.id || normalize(primary.name)
-          : `unknown:${p.key}`,
+        groupKey: primary ? institutionGroupKey(primary) : `unknown:${p.key}`,
         groupName: primary?.name || "Affiliation not established",
         groupNote: primary
           ? "Grouped by indexed institution; a shared research group is not assumed."
@@ -589,19 +596,20 @@ export function contactCandidates(
     scope.country || scope.institution
       ? people.filter((p) => p.institutions.some(inScope))
       : people;
-  const verifiedInScope = new Map(
-    scoped.map((p) => [p.key, p.institutions.filter(inScope)]),
-  );
   const scopedState =
     scope.country || scope.institution
       ? {
           ...state,
           verifications: state.verifications.filter((v) =>
-            verifiedInScope
-              .get(v.personKey)
-              ?.some((i) =>
-                matchesInstitution(i.name, v.affiliation || v.institution),
-              ),
+            scoped.some(
+              (p) =>
+                personHasKey(p, v.personKey) &&
+                p.institutions.some(
+                  (i) =>
+                    inScope(i) &&
+                    matchesInstitution(i.name, v.affiliation || v.institution),
+                ),
+            ),
           ),
         }
       : state;
@@ -611,11 +619,8 @@ export function contactCandidates(
         scope.country || scope.institution
           ? c.person.institutions.find(inScope)
           : undefined;
-      if (
-        affiliation &&
-        c.groupKey !== (affiliation.id || normalize(affiliation.name))
-      ) {
-        c.groupKey = affiliation.id || normalize(affiliation.name);
+      if (affiliation && c.groupKey !== institutionGroupKey(affiliation)) {
+        c.groupKey = institutionGroupKey(affiliation);
         c.groupName = affiliation.name;
       }
       const programme = programmes.find((r) =>
@@ -649,7 +654,16 @@ export function contactCandidates(
     const listedProfile = listedPerson(l);
     const p =
       matches.length === 1
-        ? { ...matches[0].person, key: listedProfile.key }
+        ? {
+            ...matches[0].person,
+            key: listedProfile.key,
+            aliases: [
+              ...new Set([
+                matches[0].person.key,
+                ...(matches[0].person.aliases || []),
+              ]),
+            ],
+          }
         : listedProfile;
     if (matches.length === 1) merged.add(matches[0].person.key);
     const entry = rankCandidates([p], topic, state, now)[0];
@@ -677,6 +691,7 @@ export function contactCandidates(
         ));
     contacts.push({
       ...entry,
+      literatureKey: matches.length === 1 ? matches[0].person.key : undefined,
       person: { ...p, officialGroup: l.group, officialRoleSource: l.source },
       groupName: l.group + " · " + l.institution,
       groupKey: "listed:" + normalize(l.group),

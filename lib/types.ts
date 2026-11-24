@@ -32,6 +32,9 @@ export type Author = {
   id?: string;
   orcid?: string;
   externalId?: string;
+  // Identity evidence retained when two provider records describe one work.
+  previousNameKeys?: string[];
+  additionalExternalIds?: string[];
   profileUrl?: string;
   institutions: Institution[];
   corresponding?: boolean;
@@ -86,6 +89,12 @@ export type Person = {
   officialGroup?: string;
   officialRoleSource?: string;
   key: string;
+  aliases?: string[];
+  mergedBy?: {
+    rule: "identifier" | "name-institution" | "manual";
+    detail: string;
+  }[];
+  possibleDuplicates?: { key: string; name: string; reason: string }[];
   name: string;
   id?: string;
   orcid?: string;
@@ -99,6 +108,11 @@ export type Person = {
   matched: string[];
   identity: string;
   corresponding: boolean;
+};
+export type IdentityDecision = {
+  keys: string[];
+  decision: "same" | "different";
+  decidedAt: string;
 };
 export type Saved = {
   person: Person;

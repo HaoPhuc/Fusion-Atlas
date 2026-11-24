@@ -31,9 +31,15 @@ import {
 import { ThemeSwitch } from "./components/theme-switch";
 import { ProfilePanel, Recommendations } from "./components/matching-panel";
 import {
+  institutionGroupKey,
+  personHasKey,
+  peopleShareKey,
+} from "@/lib/identity";
+import {
   matchingStateSchema,
   verificationSchema,
   contactCandidates,
+  canonicalContact,
   contactIdentity,
   recommendationGroups,
   type MatchingState,
@@ -106,6 +112,11 @@ function Out({ href, children }: { href?: string; children: React.ReactNode }) {
     </a>
   ) : (
     <span>{children}</span>
+  );
+}
+function sameSavedEntry(entry: Saved, row: Saved) {
+  return (
+    entry.savedAt === row.savedAt && personHasKey(entry.person, row.person.key)
   );
 }
 function download(name: string, data: string, type = "application/json") {
@@ -247,25 +258,11 @@ export default function Atlas() {
             run.options.country,
             run.options.institution?.id,
             includeUnknown,
+            matching.identityDecisions,
           )
         : [],
-    [run, includeUnknown],
+    [run, includeUnknown, matching.identityDecisions],
   );
-  const selected = selectedSnapshot
-    ? (selectedSnapshot.officialRoleSource
-        ? selectedSnapshot
-        : people.find((p) => p.key === selectedSnapshot.key)) ||
-      (selectedSnapshot.key.startsWith("unverified:")
-        ? people.find(
-            (p) =>
-              normalize(p.name) === normalize(selectedSnapshot.name) &&
-              p.works.some((w) =>
-                selectedSnapshot.works.some((s) => s.id === w.id),
-              ),
-          )
-        : undefined) ||
-      selectedSnapshot
-    : undefined;
   const visiblePeople = supervisorsOnly
     ? people.filter((p) => p.supervisedWorkIds?.length)
     : people;
@@ -274,6 +271,16 @@ export default function Atlas() {
       run ? contactCandidates(people, run.topic, matching, run.options) : [],
     [people, run, matching],
   );
+  const listing =
+    selectedSnapshot?.officialRoleSource &&
+    ranked.find(
+      (c) => c.groupSource && peopleShareKey(c.person, selectedSnapshot),
+    );
+  const selected = listing
+    ? canonicalContact(listing)
+    : selectedSnapshot &&
+      (people.find((p) => personHasKey(p, selectedSnapshot.key)) ||
+        selectedSnapshot);
   const region =
     run && !run.options.country && !run.options.institution
       ? matching.profile.region
@@ -293,6 +300,35 @@ export default function Atlas() {
   function saveBoard(b: Board) {
     setRun((r) => (r ? { ...r, board: b } : r));
   }
+  function decideIdentity(
+    person: Person,
+    key: string,
+    decision: "same" | "different",
+  ) {
+    const keys = [person.key, key];
+    if (keys.some((k) => k.length > 500)) {
+      setError(
+        "This identity key exceeds the 500-character limit for a saved decision.",
+      );
+      return;
+    }
+    const isPair = (d: MatchingState["identityDecisions"][number]) =>
+      d.keys.length === 2 && keys.every((k) => d.keys.includes(k));
+    if (
+      matching.identityDecisions.length >= 500 &&
+      !matching.identityDecisions.some(isPair)
+    ) {
+      setError("You have reached the limit of 500 saved identity decisions.");
+      return;
+    }
+    setMatching((s) => ({
+      ...s,
+      identityDecisions: [
+        ...s.identityDecisions.filter((d) => !isPair(d)),
+        { keys, decision, decidedAt: new Date().toISOString() },
+      ],
+    }));
+  }
   function feedback(c: Recommendation, kind?: FeedbackKind) {
     if (!run) return;
     setMatching((s) => ({
@@ -303,14 +339,14 @@ export default function Atlas() {
             !(
               (f.kind === "contacted" ||
                 normalize(f.topic) === normalize(run.topic)) &&
-              (f.personKey === c.person.key ||
+              (personHasKey(c.person, f.personKey) ||
                 f.personKey === c.feedback?.personKey)
             ),
         ),
         ...(kind
           ? [
               {
-                personKey: c.person.key,
+                personKey: c.literatureKey || c.person.key,
                 identity: contactIdentity(c.person),
                 topic: run.topic,
                 kind,
@@ -333,13 +369,13 @@ export default function Atlas() {
       setProgress("Checking official pages for " + candidate.person.name + "…");
       const inst =
         candidate.person.institutions.find(
-          (i) => (i.id || normalize(i.name)) === candidate.groupKey,
+          (i) => institutionGroupKey(i) === candidate.groupKey,
         ) || candidate.person.institutions[0];
       try {
         const d = await api(
           {
             op: "verify",
-            personKey: candidate.person.key,
+            personKey: candidate.literatureKey || candidate.person.key,
             name: candidate.person.name,
             institutionId: inst?.id.startsWith("https://openalex.org/I")
               ? inst.id
@@ -354,7 +390,9 @@ export default function Atlas() {
           setMatching((s) => ({
             ...s,
             verifications: [
-              ...s.verifications.filter((o) => o.personKey !== v.personKey),
+              ...s.verifications.filter(
+                (o) => !personHasKey(candidate.person, o.personKey),
+              ),
               v,
             ].slice(-300),
           }));
@@ -627,6 +665,8 @@ export default function Atlas() {
             snapshot.topic,
             snapshot.options.country,
             snapshot.options.institution?.id,
+            true,
+            matching.identityDecisions,
           ),
           snapshot.topic,
           matching,
@@ -669,7 +709,7 @@ export default function Atlas() {
   }
   function savePerson(person: Person) {
     setSaved((s) =>
-      s.some((v) => v.person.key === person.key)
+      s.some((v) => peopleShareKey(person, v.person))
         ? s
         : [
             ...s,
@@ -752,7 +792,7 @@ export default function Atlas() {
         setSaved((v) => [
           ...v,
           ...backup.data.shortlist.filter(
-            (s) => !v.some((x) => x.person.key === s.person.key),
+            (s) => !v.some((x) => peopleShareKey(x.person, s.person)),
           ),
         ]);
         setView("shortlist");
@@ -770,7 +810,7 @@ export default function Atlas() {
         setSaved((v) => [
           ...v,
           ...d.shortlist!.filter(
-            (s) => !v.some((x) => x.person.key === s.person.key),
+            (s) => !v.some((x) => peopleShareKey(x.person, s.person)),
           ),
         ]);
       setError("");
@@ -1367,11 +1407,14 @@ export default function Atlas() {
                     candidates={ranked}
                     busy={busy}
                     checking={checking}
-                    savedKeys={saved.map((s) => s.person.key)}
-                    onSave={(c) => savePerson(c.person)}
+                    savedKeys={saved.flatMap((s) => [
+                      s.person.key,
+                      ...(s.person.aliases || []),
+                    ])}
+                    onSave={(c) => savePerson(canonicalContact(c))}
                     onExplore={(c) => {
                       setTab("people");
-                      selectPerson(c.person);
+                      selectPerson(canonicalContact(c));
                     }}
                     onVerify={(c, url) => void verify([c], url)}
                     onVerifyTop={() =>
@@ -1434,7 +1477,9 @@ export default function Atlas() {
                           <button
                             className={
                               "person-row " +
-                              (selected?.key === p.key ? "chosen" : "")
+                              (selected && peopleShareKey(p, selected)
+                                ? "chosen"
+                                : "")
                             }
                             key={p.key}
                             onClick={() => selectPerson(p)}
@@ -1460,9 +1505,11 @@ export default function Atlas() {
                                 {p.matched.length
                                   ? p.matched.slice(0, 4).join(" · ")
                                   : "Retrieved lead · read the evidence"}
-                                {p.identity.startsWith("Unverified")
+                                {p.identity.toLowerCase().includes("unverified")
                                   ? " · identity unverified"
                                   : ""}
+                                {!!p.possibleDuplicates?.length &&
+                                  " · Possible duplicate"}
                               </small>
                             </div>
                             <div className="paper-count">
@@ -1515,18 +1562,56 @@ export default function Atlas() {
                                 ? "Corresponding-author metadata found; this does not establish supervision."
                                 : "Authorship alone does not establish a supervisor role."}
                           </div>
+                          {!!selected.mergedBy?.length && (
+                            <details>
+                              <summary>
+                                Identity evidence ({selected.mergedBy.length})
+                              </summary>
+                              <ul>
+                                {selected.mergedBy.map((e, i) => (
+                                  <li key={i}>{e.detail}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                          {selected.possibleDuplicates?.map((d) => (
+                            <div key={d.key} className="identity-note">
+                              <p>
+                                Possibly the same person as{" "}
+                                <strong>{d.name}</strong> — {d.reason}
+                              </p>
+                              <div className="geo-actions">
+                                <button
+                                  onClick={() =>
+                                    decideIdentity(selected, d.key, "same")
+                                  }
+                                >
+                                  Same person
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    decideIdentity(selected, d.key, "different")
+                                  }
+                                >
+                                  Different people
+                                </button>
+                              </div>
+                            </div>
+                          ))}
                           <button
                             className="primary"
                             onClick={() => savePerson(selected)}
                           >
-                            {saved.some(
-                              (s) => s.person.key === selected.key,
+                            {saved.some((s) =>
+                              peopleShareKey(selected, s.person),
                             ) ? (
                               <Check size={15} />
                             ) : (
                               <Bookmark size={15} />
                             )}{" "}
-                            {saved.some((s) => s.person.key === selected.key)
+                            {saved.some((s) =>
+                              peopleShareKey(selected, s.person),
+                            )
                               ? "On your shortlist"
                               : "Save researcher"}
                           </button>
@@ -1885,9 +1970,7 @@ export default function Atlas() {
                   <h2>{s.person.name}</h2>
                   <button
                     onClick={() =>
-                      setSaved((v) =>
-                        v.filter((x) => x.person.key !== s.person.key),
-                      )
+                      setSaved((v) => v.filter((x) => !sameSavedEntry(x, s)))
                     }
                   >
                     Remove
@@ -1912,7 +1995,7 @@ export default function Atlas() {
                       onChange={(e) =>
                         setSaved((v) =>
                           v.map((x) =>
-                            x.person.key === s.person.key
+                            sameSavedEntry(x, s)
                               ? { ...x, status: e.target.value }
                               : x,
                           ),
@@ -1941,7 +2024,7 @@ export default function Atlas() {
                       onChange={(e) =>
                         setSaved((v) =>
                           v.map((x) =>
-                            x.person.key === s.person.key
+                            sameSavedEntry(x, s)
                               ? { ...x, notes: e.target.value }
                               : x,
                           ),
